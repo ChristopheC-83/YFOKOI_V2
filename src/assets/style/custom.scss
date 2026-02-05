@@ -1,0 +1,17 @@
+.text-clip {
+  background: linear-gradient(
+    90deg,
+    var(--text-clip-1) 0%,
+    var(--text-clip-2) 100%
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+.text-shadow{
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.png-shadow{
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.3));
+}

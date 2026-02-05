@@ -1,0 +1,12 @@
+npm install tailwindcss @tailwindcss/vite
+npm install sonner
+npm install -D vite-plugin-pwa
+npx shadcn@latest init
+npx shadcn@latest add
+npm install zustand
+npm install @supabase/supabase-js
+npm install react-router-dom
+npm install react-icons --save
+npm install @supabase/supabase-js
+npm install -D @vitejs/plugin-react-swc
+npm install @tanstack/react-query @tanstack/react-query-persist-client @tanstack/query-sync-storage-persister
