@@ -20,7 +20,6 @@ export default function Layout() {
         {/* <InstallPWA /> */}
         <Navbar />
         <div className="flex flex-col w-full">
-          
           <Outlet />
         </div>
       </main>

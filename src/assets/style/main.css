@@ -46,8 +46,8 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --text-clip-1: #0393f3;
-  --text-clip-2: #10ca6d;
+  --text-clip-1: #615fff;
+  --text-clip-2: #f6339a;
   --color-clip-1: var(--text-clip-1);
   --color-clip-2: var(--text-clip-2);
 }

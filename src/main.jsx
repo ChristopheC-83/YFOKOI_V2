@@ -5,7 +5,8 @@ import { ThemeProvider } from "./components/provider/theme-provider";
 
 createRoot(document.getElementById("root")).render(
   // <StrictMode>
-  <ThemeProvider defaultTheme="light">
+  // <ThemeProvider defaultTheme="dark">
+   <ThemeProvider defaultTheme="light">
     <App />
   </ThemeProvider>,
   // </StrictMode>,
