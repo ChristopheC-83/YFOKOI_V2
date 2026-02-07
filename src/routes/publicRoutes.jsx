@@ -13,7 +13,7 @@ export const publicRoutes = [
     ),
   },
   {
-    path: "login",
+    path: "/login",
     element: (
       <NoConnectedRoute>
         <Login />

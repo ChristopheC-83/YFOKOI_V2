@@ -13,6 +13,7 @@ export default function Navbar() {
   // Si le store n'est pas encore prêt, on ne rend rien ou un squelette
   // pour éviter le "flash" de contenu non connecté
   if (!isHydrated) return null;
+  console.log("user : ", user)
 
   return (
     <div className="bg-background text-foreground">

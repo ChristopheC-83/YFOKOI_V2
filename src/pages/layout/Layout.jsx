@@ -1,25 +1,45 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
+import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { Toaster } from "sonner";
+import { supabase } from "@/lib/supabase"; // Ton instance
 import { useUserStore } from "@/store/user/useUserStore";
 import Navbar from "@/components/navbar/Navbar";
-// import InstallPWA from "@/InstallPWA";
 import Loader from "@/components/loaders/Loader";
 
 export default function Layout() {
-  const user = useUserStore((state) => state.user);
-  const isHydrated = useUserStore((bool) => bool.isHydrated);
+  const { user, setUser, isHydrated } = useUserStore();
 
+  useEffect(() => {
+    // 1. On check la session au chargement initial
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // 2. ON ÉCOUTE L'AUTH : C'est ici que le "Magic Link" déclenche le login !
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      // console.log("🛠️ Supabase Event:", event);
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [setUser]);
+
+  // Tant que Zustand n'a pas lu le localStorage, on attend.
   if (!isHydrated) return <Loader />;
 
   return (
-    <div className="min-h-dvh  w-vw overflow-hidden ">
-      <Toaster position="top-center" richColors expand={false} />
-      <main className="w-vw min-h-dvh flex max-md:flex-col md:pl-44 md:pr-3 overflow-hidden bg-background text-foreground pb-40">
-        {/* <InstallPWA /> */}
+    <div className="min-h-dvh w-full overflow-hidden bg-background text-foreground font-sans">
+      <Toaster position="top-center" richColors />
+      <main className="flex max-md:flex-col md:pl-44 md:pr-3 min-h-dvh">
         <Navbar />
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full py-6 px-4">
           <Outlet />
         </div>
       </main>

@@ -8,7 +8,7 @@ export function Login() {
       <div className="w-full max-w-sm space-y-10">
         {/* Header avec ton utilitaire de dégradé personnalisé */}
         <div className="text-center space-y-2">
-          <h1 className="text-6xl font-black tracking-tighter underline-clip inline-block">
+          <h1 className="text-6xl font-black tracking-tighter underline-clip inline-block mb-4 ">
             YFOKOI
           </h1>
           <p className="text-muted-foreground font-medium text-sm">
@@ -18,11 +18,11 @@ export function Login() {
         </div>
 
         {/* Le conteneur du formulaire utilise tes variables de carte */}
-        <div className="bg-card text-card-foreground p-8 rounded-3xl shadow-2xl border border-border/50">
+        <div className="bg-card text-card-foreground p-8 rounded-3xl shadow-2xl border border-border/70">
           <MagicLinkForm />
         </div>
 
-        <p className="text-center text-xs text-muted-foreground/60 leading-relaxed italic">
+        <p className="text-center text-xs text-muted-foreground/80 leading-relaxed italic">
           Entrez votre email, cliquez sur le lien reçu.
           <br />
           Pas de mot de passe, pas de prise de tête.

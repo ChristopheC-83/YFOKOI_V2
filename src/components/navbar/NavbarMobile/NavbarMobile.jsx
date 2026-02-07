@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FiTool, FiActivity } from "react-icons/fi";
 import { useUserStore } from "@/store/user/useUserStore";
 import { USERS_LINKS, VISITORS_LINKS } from "@/config/navigation";
 
