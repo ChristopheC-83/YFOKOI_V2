@@ -8,6 +8,7 @@ export const VISITORS_LINKS = [
 export const USERS_LINKS = [
   { label: "Listes", path: "/Lists", icon: FiList },
   { label: "Profil", path: "/Profile", icon: FiUser },
+  
 ];
 
 

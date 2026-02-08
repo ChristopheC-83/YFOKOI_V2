@@ -8,11 +8,13 @@ import {
   FiPackage,
   FiList,
 } from "react-icons/fi";
+import { PiForkKnifeBold } from "react-icons/pi";
+
 
 export const AVAILABLE_ICONS = [
   { id: "FiShoppingCart", icon: <FiShoppingCart />, label: "Courses" },
   { id: "FiShoppingBag", icon: <FiShoppingBag />, label: "Shopping" },
-  { id: "FiCoffee", icon: <FiCoffee />, label: "Sorties" },
+  { id: "PiForkKnifeBold ", icon: <PiForkKnifeBold />, label: "Repas" },
   { id: "FiBriefcase", icon: <FiBriefcase />, label: "Boulot" },
   { id: "FiHome", icon: <FiHome />, label: "Maison" },
   { id: "FiHeart", icon: <FiHeart />, label: "Favoris" },

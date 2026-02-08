@@ -46,9 +46,9 @@ export default function CreateListModal({ isOpen, onClose, onCreated }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-12 md:pt-24 bg-background/80 backdrop-blur-sm animate-in fade-in">
-      <div className="w-full max-w-md bg-card border border-border rounded-[2.5rem] shadow-2xl p-8 relative animate-in slide-in-from-top-8 duration-300">
-        <h2 className="text-2xl font-black mb-6 uppercase">Nouvelle Liste</h2>
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-8 md:pt-24 bg-background/80 backdrop-blur-sm animate-in fade-in">
+      <div className="w-full max-w-md bg-card border border-border rounded-[2.5rem] shadow-2xl p-4 relative animate-in slide-in-from-top-8 duration-300">
+        <h2 className="text-2xl font-black mb-6 uppercase text-center">Nouvelle Liste</h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Input Titre */}
@@ -96,6 +96,13 @@ export default function CreateListModal({ isOpen, onClose, onCreated }) {
           >
             {loading ? "CRÉATION..." : "C'EST PARTI !"}
           </button>
+          {/*  Fermer la modale */}
+          <div
+            className="w-full bg-destructive text-destructive-foreground font-black py-5 rounded-2xl shadow-destructive/20"
+            onClick={onClose}
+          >
+            <p className="text-center">ANNULER</p>
+          </div>
         </form>
       </div>
     </div>

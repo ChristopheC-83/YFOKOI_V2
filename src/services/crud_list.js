@@ -28,10 +28,27 @@ export async function fetchUserLists() {
 }
 
 /**
- * Supprime une liste
+ * Récupère les détails d'une seule liste par son ID
+ */
+export async function fetchListById(id) {
+  return await supabase
+    .from("lists")
+    .select("*")
+    .eq("id", id)
+    .single();
+}
+
+
+/**
+ * Supprime une liste par son ID
  */
 export async function deleteList(listId) {
-  return await supabase.from("lists").delete().eq("id", listId);
+  const { error } = await supabase
+    .from("lists")
+    .delete()
+    .eq("id", listId);
+  
+  return { error };
 }
 
 /**
