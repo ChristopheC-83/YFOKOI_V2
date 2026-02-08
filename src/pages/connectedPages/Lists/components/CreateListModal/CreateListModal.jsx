@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { supabase } from "@/lib/supabase";
 import { useUserStore } from "@/store/user/useUserStore";
 import { toast } from "sonner";
 import { AVAILABLE_ICONS } from "@/config/icons";
+import { createList } from "@/services/crud_list";
 
 export default function CreateListModal({ isOpen, onClose, onCreated }) {
   const [title, setTitle] = useState("");
@@ -12,29 +12,38 @@ export default function CreateListModal({ isOpen, onClose, onCreated }) {
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
+
+    // 1. Validation de surface (UX)
     if (!title.trim()) return;
 
     setLoading(true);
-    // Le share_code est généré par le SQL (si tu as mis le DEFAULT)
-    // Sinon on laisse Supabase gérer.
-    const { data, error } = await supabase
-      .from("lists")
-      .insert([{ title: title.trim(), owner_id: user.id, icon: selectedIcon }])
-      .select()
-      .single();
 
-    if (error) {
-      toast.error("Impossible de créer la liste");
-    } else {
-      toast.success("Liste créée !");
-      onCreated(data); // On remonte l'info au parent pour MAJ l'UI
+    try {
+      // 2. Appel au service (on délègue la complexité à crud_list.js)
+      const { data, error } = await createList({
+        title: title.trim(),
+        icon: selectedIcon,
+        userId: user.id,
+      });
+
+      // 3. Gestion de la réponse
+      if (error) throw error; // On part dans le catch en cas d'erreur API
+
+      // 4. Succès : Feedback et nettoyage
+      toast.success("Liste créée avec succès !");
+      onCreated(data); // On informe le parent (Lists.jsx) pour qu'il ajoute la card
       setTitle("");
       onClose();
+    } catch (error) {
+      console.error("[CREATE_LIST_ERROR]:", error.message);
+      toast.error("Erreur : impossible de créer la liste");
+    } finally {
+      // 5. Quoi qu'il arrive, on libère le bouton
+      setLoading(false);
     }
-    setLoading(false);
-  };
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-12 md:pt-24 bg-background/80 backdrop-blur-sm animate-in fade-in">
