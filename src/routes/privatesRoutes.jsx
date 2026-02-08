@@ -1,5 +1,5 @@
-import Lists from "@/pages/connectedPages/Lists";
-import Profile from "@/pages/connectedPages/Profile";
+import Lists from "@/pages/connectedPages/Lists/Lists";
+import Profile from "@/pages/connectedPages/Profile/Profile";
 import ConnectedRoute from "@/pages/routeGuards/ConnectedRoute";
 
 export const privateRoutes = [
