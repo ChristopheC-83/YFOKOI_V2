@@ -11,24 +11,10 @@ import useListStore from "@/store/lists/useListStore";
 export default function Lists() {
   
   const { lists, loadLists, loading } = useListStore();
-  // const [lists, setLists] = useState([]);
-  // const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  // On récupère les listes au montage
-  // useEffect(() => {
-  //   async function fetchLists() {
-  //     const { data, error } = await supabase
-  //       .from("lists")
-  //       .select("*")
-  //       .order("created_at", { ascending: false });
-
-  //     if (!error) setLists(data);
-  //     setLoading(false);
-  //   }
-  //   fetchLists();
-  // }, []);
+ 
 
 
   useEffect(() => {

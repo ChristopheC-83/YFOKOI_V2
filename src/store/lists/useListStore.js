@@ -15,7 +15,9 @@ const useListStore = create((set, get) => ({
 
   // Action : Ajouter une liste (UI Optimiste)
   addListToStore: (newList) =>
-    set((state) => ({ lists: [newList, ...state.lists] })),
+    set((state) => ({
+      lists: [newList, ...state.lists],
+    })),
 
   // Action : Mettre à jour une liste (Celle qu'on vient d'utiliser !)
   updateListInStore: (id, updates) =>

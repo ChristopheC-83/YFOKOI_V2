@@ -7,12 +7,16 @@ import HeaderListSettings from "./components/HeaderListSettings/HeaderListSettin
 import EditList from "./components/EditList/EditList";
 import Sharing from "./components/Sharing/Sharing";
 import DeleteListButton from "./components/DeleteListButton/DeleteListButton";
+import useListStore from "@/store/lists/useListStore";
 
 export default function ListSettings() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [list, setList] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const removeListFromStore = useListStore(
+    (state) => state.removeListFromStore,
+  );
 
   useEffect(() => {
     async function loadList() {
@@ -21,6 +25,20 @@ export default function ListSettings() {
     }
     loadList();
   }, [id]);
+
+  async function handleDeleteConfirm() {
+    const { error } = await deleteList(id);
+
+    if (!error) {
+      // 3. ON NETTOIE LE STORE IMMÉDIATEMENT
+      removeListFromStore(id);
+
+      toast.success("Liste supprimée");
+      navigate("/lists"); // 4. On redirige vers un accueil déjà à jour
+    } else {
+      toast.error("Erreur lors de la suppression");
+    }
+  }
 
   if (!list) return null;
 
@@ -42,13 +60,7 @@ export default function ListSettings() {
       <DeleteListModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={async () => {
-          const { error } = await deleteList(id);
-          if (!error) {
-            toast.success("Liste supprimée");
-            navigate("/lists");
-          }
-        }}
+        onConfirm={handleDeleteConfirm} // On utilise la nouvelle fonction
         listTitle={list.title}
       />
     </main>
