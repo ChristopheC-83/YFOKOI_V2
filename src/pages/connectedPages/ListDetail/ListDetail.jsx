@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -13,7 +12,6 @@ import { fetchItems, addItem, toggleItemStatus, deleteItem, deleteCheckedItems }
 import ItemsList from "./components/ItemsList/ItemsList";
 import AddItemInput from "./components/AddItemInput/AddItemInput";
 import ListHeader from "./components/ListHeader/ListHeader";
-import DeleteListModal from "../Lists/components/DeleteListModal/DeleteListModal";
 
 export default function ListDetail() {
   const { id } = useParams();
@@ -22,7 +20,6 @@ export default function ListDetail() {
   const [listInfo, setListInfo] = useState(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // Notre fameux fetchData
   async function fetchData() {
@@ -48,16 +45,7 @@ export default function ListDetail() {
     setLoading(false);
   }
 
-  async function handleConfirmDelete() {
-    const { error } = await deleteList(id);
-
-    if (error) {
-      toast.error("Impossible de supprimer la liste");
-    } else {
-      toast.success("Liste supprimée avec succès");
-      navigate("/lists"); // Redirection immédiate
-    }
-  }
+  
 
   useEffect(() => {
     fetchData();
