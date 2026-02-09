@@ -3,8 +3,10 @@ import { useUserStore } from "@/store/user/useUserStore";
 import { toast } from "sonner";
 import { AVAILABLE_ICONS } from "@/config/icons";
 import { createList } from "@/services/crud_list";
+import useListStore from "@/store/lists/useListStore";
 
-export default function CreateListModal({ isOpen, onClose, onCreated }) {
+export default function CreateListModal({ isOpen, onClose }) {
+  const addListToStore = useListStore((state) => state.addListToStore);
   const [title, setTitle] = useState("");
   const [selectedIcon, setSelectedIcon] = useState("FiList");
   const [loading, setLoading] = useState(false);
@@ -15,32 +17,31 @@ export default function CreateListModal({ isOpen, onClose, onCreated }) {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    // 1. Validation de surface (UX)
     if (!title.trim()) return;
 
     setLoading(true);
 
     try {
-      // 2. Appel au service (on délègue la complexité à crud_list.js)
+      // Appel au service Supabase
       const { data, error } = await createList({
         title: title.trim(),
         icon: selectedIcon,
         userId: user.id,
       });
 
-      // 3. Gestion de la réponse
-      if (error) throw error; // On part dans le catch en cas d'erreur API
+      if (error) throw error;
 
-      // 4. Succès : Feedback et nettoyage
+      // MAGIE : On met à jour le store global
+      // Plus besoin de "onCreated(data)", le store prévient tout le monde
+      addListToStore(data);
+
       toast.success("Liste créée avec succès !");
-      onCreated(data); // On informe le parent (Lists.jsx) pour qu'il ajoute la card
       setTitle("");
       onClose();
     } catch (error) {
       console.error("[CREATE_LIST_ERROR]:", error.message);
       toast.error("Erreur : impossible de créer la liste");
     } finally {
-      // 5. Quoi qu'il arrive, on libère le bouton
       setLoading(false);
     }
   }

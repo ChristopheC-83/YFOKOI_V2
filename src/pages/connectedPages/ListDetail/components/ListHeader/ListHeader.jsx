@@ -18,7 +18,7 @@ export default function ListHeader({ title, iconId, listId }) {
 
       {/* Titre & Icône Centrés */}
       <div className="w-full flex flex-wrap items-center text-center px-4 gap-3 justify-center">
-        <span className="text-3xl text-clip-1">{getIconById(iconId)}</span>
+        <span className="text-2xl text-clip-1">{getIconById(iconId)}</span>
         <h1 className="text-xl font-black uppercase tracking-tighter truncate  text-clip ">
           {title}
         </h1>

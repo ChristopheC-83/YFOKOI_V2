@@ -44,3 +44,24 @@ export async function toggleItemStatus(itemId, currentStatus) {
     .select()
     .single();
 }
+
+/**
+ * Supprime un article de la liste
+ */
+export async function deleteItem(itemId) {
+  const { error } = await supabase
+    .from("items")
+    .delete()
+    .eq("id", itemId);
+    
+  return { error };
+}
+
+//  supprimer les elements faits
+export async function deleteCheckedItems(listId) {
+  return await supabase
+    .from("items")
+    .delete()
+    .eq("list_id", listId)
+    .eq("is_checked", true);
+}

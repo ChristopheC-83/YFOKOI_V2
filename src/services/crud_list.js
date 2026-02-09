@@ -55,10 +55,14 @@ export async function deleteList(listId) {
  * Met à jour les informations d'une liste (Titre, Icône, etc.)
  */
 export async function updateList(listId, updates) {
-  return await supabase
+  const { data, error } = await supabase
     .from("lists")
     .update(updates)
     .eq("id", listId)
-    .select()
-    .single();
+    .select(); 
+
+  return {
+    data: data ? data[0] : null, 
+    error,
+  };
 }

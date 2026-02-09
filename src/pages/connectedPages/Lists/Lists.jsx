@@ -1,30 +1,38 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 import CreateListModal from "./components/CreateListModal/CreateListModal";
 import ListCard from "./components/ListCard/ListCard";
 import { useNavigate } from "react-router-dom";
 import HeaderList from "./components/HeaderList/HeaderList";
 import CreateListButton from "./components/CreateListButton/CreateListButton";
 import NoListFrame from "./components/NoListFrame/NoListFrame";
+import useListStore from "@/store/lists/useListStore";
 
 export default function Lists() {
-  const [lists, setLists] = useState([]);
-  const [loading, setLoading] = useState(true);
+  
+  const { lists, loadLists, loading } = useListStore();
+  // const [lists, setLists] = useState([]);
+  // const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   // On récupère les listes au montage
-  useEffect(() => {
-    async function fetchLists() {
-      const { data, error } = await supabase
-        .from("lists")
-        .select("*")
-        .order("created_at", { ascending: false });
+  // useEffect(() => {
+  //   async function fetchLists() {
+  //     const { data, error } = await supabase
+  //       .from("lists")
+  //       .select("*")
+  //       .order("created_at", { ascending: false });
 
-      if (!error) setLists(data);
-      setLoading(false);
-    }
-    fetchLists();
+  //     if (!error) setLists(data);
+  //     setLoading(false);
+  //   }
+  //   fetchLists();
+  // }, []);
+
+
+  useEffect(() => {
+    loadLists(); // On charge les data au montage
   }, []);
 
   const listsLength = lists?.length || 0;
@@ -34,7 +42,7 @@ export default function Lists() {
   }
 
   return (
-    <div className="max-w-md w-full mx-auto py-8 animate-in fade-in duration-700">
+    <div className="max-w-md w-full mx-auto py-8 animate-in fade-in duration-700 slide-in-from-right ">
       {/* HEADER : L'identité visuelle */}
       <HeaderList listsLength={listsLength} />
 
@@ -65,7 +73,6 @@ export default function Lists() {
       <CreateListModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onCreated={(newList) => setLists([newList, ...lists])}
       />
     </div>
   );

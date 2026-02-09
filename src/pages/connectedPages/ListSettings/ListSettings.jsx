@@ -25,7 +25,7 @@ export default function ListSettings() {
   if (!list) return null;
 
   return (
-    <main className="mmax-w-md w-full mx-auto pb-40 animate-in fade-in duration-700 slide-in-from-right ">
+    <main className="mmax-w-md w-full mx-auto pb-40 animate-in fade-in duration-300 slide-in-from-right ">
       {/* Header simplifié pour les réglages */}
       <HeaderListSettings onClick={() => navigate(-1)} />
 

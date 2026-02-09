@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 // Services
 import { deleteList, fetchListById } from "@/services/crud_list";
-import { fetchItems, addItem, toggleItemStatus } from "@/services/itemService";
+import { fetchItems, addItem, toggleItemStatus, deleteItem, deleteCheckedItems } from "@/services/itemService";
 
 // Composants découpés
 import ItemsList from "./components/ItemsList/ItemsList";
@@ -80,6 +80,44 @@ export default function ListDetail() {
     }
   }
 
+  async function handleDeleteItem(itemId) {
+    // 1. On l'enlève de l'écran (UI Optimiste)
+    setItems(items.filter((i) => i.id !== itemId));
+
+    // 2. ON ENVOIE L'ORDRE (C'est ici que ça doit coincer)
+    const { error } = await deleteItem(itemId); // <--- VÉRIFIE LE AWAIT
+
+    if (error) {
+      console.error("ERREUR SUPABASE:", error);
+      toast.error("Échec de la suppression en base");
+      // On le remet si ça a échoué pour ne pas mentir à l'utilisateur
+      fetchData();
+    }
+  }
+
+  async function handleClearCompleted() {
+    // 1. On demande d'abord, on agit après
+    const hasConfirmed = window.confirm(
+      "Es-tu sûr de vouloir supprimer définitivement tous les articles cochés ?",
+    );
+
+    if (!hasConfirmed) return; // L'utilisateur a eu peur, on arrête tout.
+
+    // 2. UI Optimiste : on nettoie l'écran tout de suite
+    const previousItems = [...items];
+    setItems(items.filter((i) => !i.is_checked));
+
+    // 3. Appel API (Le muscle)
+    const { error } = await deleteCheckedItems(id);
+
+    if (error) {
+      toast.error("Erreur lors du nettoyage en base de données");
+      setItems(previousItems); // Rollback : on remet les items si la DB a dit non
+    } else {
+      toast.success("Panier vidé !");
+    }
+  }
+
   if (loading)
     return (
       <div className="p-20 text-center font-black animate-pulse">
@@ -88,7 +126,7 @@ export default function ListDetail() {
     );
 
   return (
-    <main className="max-w-md w-full mx-auto animate-in fade-in duration-300 pb-32">
+    <main className="max-w-md w-full mx-auto animate-in fade-in duration-300 slide-in-from-right  pb-32">
       <ListHeader title={listInfo.title} iconId={listInfo.icon} listId={id} />
 
       <AddItemInput
@@ -96,7 +134,12 @@ export default function ListDetail() {
         onItemAdded={(newItem) => setItems([newItem, ...items])}
       />
 
-      <ItemsList items={items} onToggle={handleToggle} />
+      <ItemsList
+        items={items}
+        onToggle={handleToggle}
+        onDelete={handleDeleteItem}
+        onClearCompleted={handleClearCompleted}
+      />
     </main>
   );
 }

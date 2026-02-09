@@ -1,7 +1,7 @@
 import React from "react";
 import { FiTrash2 } from "react-icons/fi";
 
-export default function ItemRow({ item, onToggle, isCompleted }) {
+export default function ItemRow({ item, onToggle, isCompleted, onDelete }) {
   // console.log(item, isCompleted);
   return (
     <div
@@ -42,8 +42,7 @@ export default function ItemRow({ item, onToggle, isCompleted }) {
       <button
         onClick={(e) => {
           e.stopPropagation(); // Pour ne pas déclencher le toggle
-          console.log("Delete item:", item.id);
-          // On ajoutera onDelete(item.id) ici bientôt
+          onDelete(item.id);
         }}
         className="p-1 text-destructive   "
       >
