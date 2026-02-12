@@ -67,7 +67,6 @@ export default function Lists() {
             const hasPendingGuests =
               isOwner &&
               list.list_shares?.some((share) => share.status === "pending");
-
             return (
               <div key={list.id} className="relative group">
                 {/* Overlay pour bloquer l'accès si en attente */}
@@ -86,7 +85,7 @@ export default function Lists() {
                 {iAmWaiting && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div className="bg-orange-500/90 text-white text-[10px] font-black uppercase px-4 py-1.5 rounded-full shadow-xl border-2 border-white animate-pulse tracking-wider">
-                      En attente de l'auteur
+                      En attente de validation
                     </div>
                   </div>
                 )}

@@ -2,9 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FiChevronLeft, FiSettings } from "react-icons/fi";
 import { getIconById } from "@/config/icons";
+import NotificationBadge from "@/components/notificationBadge/NotificationBadge";
 
-export default function ListHeader({ title, iconId, listId }) {
+export default function ListHeader({ title, iconId, listId, hasNotification }) {
   const navigate = useNavigate();
+  console.log(hasNotification);
 
   return (
     <header className="flex items-center justify-between mb-4">
@@ -26,10 +28,11 @@ export default function ListHeader({ title, iconId, listId }) {
 
       {/* Bouton Paramètres (placeholder pour l'instant) */}
       <button
-        className="p-3 bg-card border border-border rounded-2xl shadow-sm hover:bg-primary/10 transition-colors text-clip-2"
+        className="p-3 bg-card border border-border rounded-2xl shadow-sm hover:bg-primary/10 transition-colors text-clip-2 relative"
         onClick={() => navigate(`/list/${listId}/settings`)}
       >
         <FiSettings size={24} />
+        {hasNotification && <NotificationBadge />}
       </button>
     </header>
   );

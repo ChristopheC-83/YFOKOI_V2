@@ -42,6 +42,8 @@ const useListStore = create((set, get) => ({
 
   // Sélecteur : Récupérer une seule liste par son ID
   getListById: (id) => get().lists.find((l) => l.id === id),
+
+  
 }));
 
 export default useListStore;

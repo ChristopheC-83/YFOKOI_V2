@@ -50,23 +50,29 @@ export async function fetchUserLists(userId) {
  * Récupère les détails d'une seule liste par son ID
  */
 export async function fetchListById(id) {
-  return await supabase
+  const { data, error } = await supabase
     .from("lists")
-    .select("*")
+    .select(
+      `
+      *,
+      list_shares (
+        status,
+        user_id
+      )
+    `,
+    ) 
     .eq("id", id)
     .single();
-}
 
+  return { data, error };
+}
 
 /**
  * Supprime une liste par son ID
  */
 export async function deleteList(listId) {
-  const { error } = await supabase
-    .from("lists")
-    .delete()
-    .eq("id", listId);
-  
+  const { error } = await supabase.from("lists").delete().eq("id", listId);
+
   return { error };
 }
 
@@ -78,10 +84,25 @@ export async function updateList(listId, updates) {
     .from("lists")
     .update(updates)
     .eq("id", listId)
-    .select(); 
+    .select();
 
   return {
-    data: data ? data[0] : null, 
+    data: data ? data[0] : null,
     error,
   };
+}
+
+export async function acceptShareRequest(listId, guestId) {
+  const { data, error } = await supabase
+    .from("list_shares")
+    .update({ status: "accepted" })
+    .eq("list_id", listId)
+    .eq("user_id", guestId)
+    .select(); // On récupère la ligne pour confirmer au store
+
+  if (error) {
+    console.error("Erreur validation partage:", error);
+    throw error;
+  }
+  return data[0];
 }

@@ -6,12 +6,19 @@ import { toast } from "sonner";
 
 // Services
 import { deleteList, fetchListById } from "@/services/crud_list";
-import { fetchItems, addItem, toggleItemStatus, deleteItem, deleteCheckedItems } from "@/services/itemService";
+import {
+  fetchItems,
+  addItem,
+  toggleItemStatus,
+  deleteItem,
+  deleteCheckedItems,
+} from "@/services/itemService";
 
 // Composants découpés
 import ItemsList from "./components/ItemsList/ItemsList";
 import AddItemInput from "./components/AddItemInput/AddItemInput";
 import ListHeader from "./components/ListHeader/ListHeader";
+import { useUserStore } from "@/store/user/useUserStore";
 
 export default function ListDetail() {
   const { id } = useParams();
@@ -20,6 +27,13 @@ export default function ListDetail() {
   const [listInfo, setListInfo] = useState(null);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useUserStore();
+
+  const isOwner = listInfo?.owner_id === user?.id;
+  const hasPendingRequests = !!(
+    isOwner &&
+    listInfo?.list_shares?.some((share) => share.status === "pending")
+  );
 
   // Notre fameux fetchData
   async function fetchData() {
@@ -44,8 +58,6 @@ export default function ListDetail() {
 
     setLoading(false);
   }
-
-  
 
   useEffect(() => {
     fetchData();
@@ -115,8 +127,12 @@ export default function ListDetail() {
 
   return (
     <main className="max-w-md w-full mx-auto animate-in fade-in duration-300 slide-in-from-right  pb-32">
-      <ListHeader title={listInfo.title} iconId={listInfo.icon} listId={id} />
-
+      <ListHeader
+        title={listInfo.title}
+        iconId={listInfo.icon}
+        listId={id}
+        hasNotification={hasPendingRequests} 
+      />
       <AddItemInput
         listId={id}
         onItemAdded={(newItem) => setItems([newItem, ...items])}
