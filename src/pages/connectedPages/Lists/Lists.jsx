@@ -7,55 +7,70 @@ import HeaderList from "./components/HeaderList/HeaderList";
 import CreateListButton from "./components/CreateListButton/CreateListButton";
 import NoListFrame from "./components/NoListFrame/NoListFrame";
 import useListStore from "@/store/lists/useListStore";
+import { ModalJoinList } from "./components/ModalJoinList/ModalJoinList";
 
 export default function Lists() {
-  
-  const { lists, loadLists, loading } = useListStore();
+  const { lists = [], loadLists, loading } = useListStore(); // Force le tableau vide ici par sécurité
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
- 
-
-
   useEffect(() => {
-    loadLists(); // On charge les data au montage
+    loadLists();
   }, []);
 
+  // Utilisation de l'optional chaining pour éviter le crash
   const listsLength = lists?.length || 0;
 
-  function handleListClick(listId) {
-    navigate(`/list/${listId}`);
-  }
-
   return (
-    <div className="max-w-md w-full mx-auto py-8 animate-in fade-in duration-700 slide-in-from-right ">
-      {/* HEADER : L'identité visuelle */}
+    <div className="max-w-md w-full mx-auto py-8 animate-in fade-in duration-700 slide-in-from-right">
       <HeaderList listsLength={listsLength} />
 
-      {/* BODY : Gestion des états */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {[1, 2, 3].map((i) => (
             <div key={i} className="h-40 bg-muted animate-pulse rounded-3xl" />
           ))}
         </div>
-      ) : lists.length === 0 ? (
-        /* Pas encore de liste ? */
-
+      ) : listsLength === 0 ? ( // On utilise listsLength qu'on a sécurisé plus haut
         <NoListFrame onClick={() => setIsModalOpen(true)} />
       ) : (
-        /* Tes listes + création */
         <div className="w-full flex flex-col gap-3">
           <CreateListButton
             textButton={"Créer une nouvelle liste"}
             onClick={() => setIsModalOpen(true)}
           />
 
-          {lists.map((list) => (
-            <ListCard key={list.id} list={list} onClick={handleListClick} />
-          ))}
+          {/* Ajout du bouton rejoindre ici pour que l'user puisse l'utiliser ! */}
+          {/* <ModalJoinList refreshLists={loadLists} /> */}
+
+          {lists.map((list) => {
+            // Sécurité : list_shares peut être undefined ou null
+            const isPending = list.list_shares?.some(
+              (share) => share.status === "pending",
+            );
+
+            return (
+              <div key={list.id} className="relative">
+                <div
+                  className={`transition-all ${isPending ? "opacity-60 grayscale pointer-events-none" : "cursor-pointer"}`}
+                  onClick={() => !isPending && navigate(`/list/${list.id}`)}
+                >
+                  <ListCard list={list} />
+                </div>
+
+                {isPending && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="bg-orange-500/90 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full shadow-lg border-2 border-white animate-pulse">
+                      En attente de validation
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
+
       <CreateListModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

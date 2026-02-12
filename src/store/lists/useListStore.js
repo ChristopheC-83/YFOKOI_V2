@@ -1,20 +1,29 @@
 import { create } from "zustand";
-import { fetchUserLists } from "@/services/crud_list"; // Ton service existant
+import { fetchUserLists } from "@/services/crud_list";
+import { supabase } from "@/lib/supabase";
 
 const useListStore = create((set, get) => ({
-  lists: [],
+  lists: [], // Toujours initialiser à un tableau vide
   loading: false,
 
-  // Action : Charger toutes les listes depuis Supabase
+  // Dans ton store
   loadLists: async () => {
     set({ loading: true });
-    const { data, error } = await fetchUserLists();
-    if (!error) set({ lists: data });
-    set({ loading: false });
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error("Non authentifié");
+
+      const data = await fetchUserLists(user.id); // On passe l'ID ici
+      set({ lists: data, loading: false });
+    } catch (error) {
+      console.error(error);
+      set({ lists: [], loading: false });
+    }
   },
 
-  // Action : Ajouter une liste (UI Optimiste)
-  addListToStore: (newList) =>
+  addList: (newList) =>
     set((state) => ({
       lists: [newList, ...state.lists],
     })),

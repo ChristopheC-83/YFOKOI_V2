@@ -18,13 +18,32 @@ export async function createList({ title, icon, userId }) {
 }
 
 /**
- * Récupère toutes les listes d'un utilisateur
+ * Récupère les listes (Proprio + Partagées)
+ * La RLS s'occupe de ne renvoyer que ce que l'user a le droit de voir.
  */
-export async function fetchUserLists() {
-  return await supabase
+export async function fetchUserLists(userId) {
+  if (!userId) return [];
+
+  // On récupère tout ce que la RLS nous autorise
+  // (La RLS filtrera déjà pour ne donner que tes listes + tes partages)
+  const { data, error } = await supabase
     .from("lists")
-    .select("*")
+    .select(
+      `
+      *,
+      list_shares(status, user_id)
+    `,
+    )
     .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  // On filtre localement pour être DOUBLEMENT sûr (Sécurité Client)
+  return data.filter(
+    (list) =>
+      list.owner_id === userId ||
+      list.list_shares?.some((s) => s.user_id === userId),
+  );
 }
 
 /**

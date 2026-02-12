@@ -71,10 +71,17 @@ export default function Invitations({ list }) {
             <span className="bg-primary/10 text-primary font-bold h-5 w-5 rounded-full flex items-center justify-center text-[10px]">
               3
             </span>
-            Ils accèdent instantanément à la liste !
+            Tu valides leur accés et leur possibilités d'action.
+          </li>
+          <li className="flex gap-3 font-bold">
+            <span className="bg-primary/10 text-primary font-bold h-5 w-5 rounded-full flex items-center justify-center text-[10px] ">
+              4
+            </span>
+            Vous avez votre liste partagée !
           </li>
         </ul>
       </div>
     </div>
   );
 }
+// b2bc78de

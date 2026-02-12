@@ -6,7 +6,7 @@ import { createList } from "@/services/crud_list";
 import useListStore from "@/store/lists/useListStore";
 
 export default function CreateListModal({ isOpen, onClose }) {
-  const addListToStore = useListStore((state) => state.addListToStore);
+  const addListToStore = useListStore((state) => state.addList);
   const [title, setTitle] = useState("");
   const [selectedIcon, setSelectedIcon] = useState("FiList");
   const [loading, setLoading] = useState(false);
