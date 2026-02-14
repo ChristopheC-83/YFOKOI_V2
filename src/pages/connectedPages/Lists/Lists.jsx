@@ -54,19 +54,20 @@ export default function Lists() {
 
           {lists.map((list) => {
             const isOwner = list.owner_id === user?.id;
+            const shares = list.list_shares || []; // Petit "safety"
 
             // Je suis invité et j'attends la validation
             const iAmWaiting =
               !isOwner &&
-              list.list_shares?.some(
+              shares.some(
                 (share) =>
-                  share.user_id === user?.id && share.status === "pending",
+                  share.invited_id === user?.id && share.status === "pending",
               );
 
-            // Je suis proprio et j'ai des demandes en attente
+            // 2. Je suis proprio et j'ai des demandes en attente
             const hasPendingGuests =
-              isOwner &&
-              list.list_shares?.some((share) => share.status === "pending");
+              isOwner && shares.some((share) => share.status === "pending");
+
             return (
               <div key={list.id} className="relative group">
                 {/* Overlay pour bloquer l'accès si en attente */}

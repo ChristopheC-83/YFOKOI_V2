@@ -8,6 +8,7 @@ import EditList from "./components/EditList/EditList";
 import Sharing from "./components/Sharing/Sharing";
 import DeleteListButton from "./components/DeleteListButton/DeleteListButton";
 import useListStore from "@/store/lists/useListStore";
+import ManageAccess from "./components/ManageAccess/ManageAccess";
 
 export default function ListSettings() {
   const { id } = useParams();
@@ -51,8 +52,11 @@ export default function ListSettings() {
         {/* SECTION : ÉDITION (NOM / ICÔNE) */}
         <EditList list={list} />
 
-        {/* SECTION : PARTAGE (Placeholder pour tes futurs besoins) */}
+        {/* SECTION : PARTAGE PAR CODE */}
         <Sharing list={list} />
+
+        {/* SECTION : MANAGEMENT DES PARTAGES */}
+        <ManageAccess list={list} />
 
         {/* SECTION : DANGER ZONE */}
         <DeleteListButton onClick={() => setIsDeleteModalOpen(true)} />
