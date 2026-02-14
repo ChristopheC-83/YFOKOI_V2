@@ -52,7 +52,7 @@ export default function EditList({ list }) {
   }
 
   return (
-    <section className="bg-card border border-border rounded-[2.5rem] p-6 shadow-sm">
+    <section className="bg-card border border-border rounded-2xl p-3 shadow-sm">
       <h2 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-6">
         Général
       </h2>
@@ -73,13 +73,13 @@ export default function EditList({ list }) {
         </div>
 
         {/* GRILLE D'ICÔNES : Sélection visuelle forte */}
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid grid-cols-4 gap-2">
           {AVAILABLE_ICONS.map((item) => (
             <button
               key={item.id}
               type="button"
               onClick={() => setSelectedIcon(item.id)}
-              className={`text-2xl p-3 rounded-xl transition-all border-2 active:scale-90 ${
+              className={`text-2xl p-3 rounded-xl flex justify-center  transition-all border-2 active:scale-90 ${
                 selectedIcon === item.id
                   ? "bg-primary/10 border-primary scale-110 shadow-sm"
                   : "bg-transparent border-transparent hover:bg-muted"

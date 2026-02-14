@@ -52,3 +52,49 @@ export async function joinListByCode(code) {
 
   return { ...list, status: "pending" };
 }
+
+/**
+ * Récupère les profils complets à partir d'une liste d'IDs
+ */
+export async function getProfilesByIDs(ids) {
+  if (!ids || ids.length === 0) return { data: [], error: null };
+  
+  return await supabase
+    .from("profiles")
+    .select("id, display_name, email, avatar_url")
+    .in("id", ids);
+}
+
+// Accepter : passe le statut à 'accepted'
+export async function acceptShareRequest(listId, invitedId) {
+  const { data, error } = await supabase
+    .from("list_shares")
+    .update({ status: "accepted" })
+    .eq("list_id", listId)
+    .eq("invited_id", invitedId)
+    .select();
+  return { data, error };
+}
+
+// Refuser : supprime simplement la demande
+export async function rejectShareRequest(listId, invitedId) {
+  const { error } = await supabase
+    .from("list_shares")
+    .delete()
+    .eq("list_id", listId)
+    .eq("invited_id", invitedId);
+  return { error };
+}
+
+/**
+ * Met à jour le rôle d'un membre
+ */
+export async function updateMemberRole(listId, invitedId, newRole) {
+  return await supabase
+    .from("list_shares")
+    .update({ role: newRole })
+    .eq("list_id", listId)
+    .eq("invited_id", invitedId)
+    .select();
+}
+

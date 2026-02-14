@@ -7,7 +7,6 @@ import HeaderList from "./components/HeaderList/HeaderList";
 import CreateListButton from "./components/CreateListButton/CreateListButton";
 import NoListFrame from "./components/NoListFrame/NoListFrame";
 import useListStore from "@/store/lists/useListStore";
-import { ModalJoinList } from "./components/ModalJoinList/ModalJoinList";
 import { useUserStore } from "@/store/user/useUserStore";
 import NotificationBadge from "@/components/notificationBadge/NotificationBadge";
 

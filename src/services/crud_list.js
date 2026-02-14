@@ -55,15 +55,18 @@ export async function fetchListById(id) {
       *,
       list_shares (
         status,
+        role,
         invited_id
       )
     `,
-    ) // Modification : user_id -> invited_id
+    )
     .eq("id", id)
     .single();
 
   return { data, error };
 }
+
+
 
 /**
  * Supprime une liste par son ID
@@ -89,20 +92,4 @@ export async function updateList(listId, updates) {
   };
 }
 
-/**
- * Accepte une demande de partage
- */
-export async function acceptShareRequest(listId, guestId) {
-  const { data, error } = await supabase
-    .from("list_shares")
-    .update({ status: "accepted" })
-    .eq("list_id", listId)
-    .eq("invited_id", guestId) // Modification : user_id -> invited_id
-    .select();
 
-  if (error) {
-    console.error("Erreur validation partage:", error);
-    throw error;
-  }
-  return data ? data[0] : null;
-}
