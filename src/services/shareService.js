@@ -67,6 +67,7 @@ export async function getProfilesByIDs(ids) {
 
 // Accepter : passe le statut à 'accepted'
 export async function acceptShareRequest(listId, invitedId) {
+  console.log("Tentative de validation de :", { listId, invitedId });
   const { data, error } = await supabase
     .from("list_shares")
     .update({ status: "accepted" })
@@ -78,7 +79,7 @@ export async function acceptShareRequest(listId, invitedId) {
 
 // Refuser : supprime simplement la demande
 export async function rejectShareRequest(listId, invitedId) {
-  // AJOUTE CE LOG ICI
+  
   console.log("Tentative de suppression de :", { listId, invitedId });
 
   return await supabase

@@ -44,7 +44,7 @@ export default function LevelsManager({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 text-primary px-1">
+      <div className="flex items-center gap-2 text-primary ">
         <ShieldCheck size={14} />
         <span className="text-[11px] font-bold uppercase tracking-wider">
           Membres actifs
@@ -53,24 +53,24 @@ export default function LevelsManager({
 
       <div className="grid gap-3">
         {members.map((member) => {
-          const p = profiles[member.invited_id];
+          const profile = profiles[member.invited_id];
           return (
             <div
               key={member.invited_id}
-              className="bg-muted/30 border border-border p-4 rounded-3xl space-y-3"
+              className="bg-primary/20 border border-primary p-2 rounded-xl space-y-3"
             >
               <div className="flex items-center justify-between">
                 <div className="flex flex-col">
                   <span className="text-sm font-bold text-foreground">
-                    {p?.display_name || "Membre"}
+                    {profile?.display_name || "Membre"}
                   </span>
-                  <span className="text-[10px] text-muted-foreground">
-                    {p?.email}
+                  <span className="text-[12px] text-muted-foreground">
+                    {profile?.email}
                   </span>
                 </div>
                 <button
                   onClick={() => handleRemove(member.invited_id)}
-                  className="p-2 text-muted-foreground hover:text-red-500 transition-colors"
+                  className="p-2 text-muted-foreground hover:text-red-500 transition-colors cursor-pointer"
                 >
                   <UserMinus size={18} />
                 </button>
@@ -82,11 +82,11 @@ export default function LevelsManager({
                 onChange={(e) =>
                   handleRoleChange(member.invited_id, e.target.value)
                 }
-                className="w-full bg-background border border-border rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-primary outline-none"
+                className="w-full bg-background border border-border rounded-xl px-2 py-1.5 text-xs font-medium focus:ring-2 focus:ring-primary outline-none"
               >
-                {Object.values(LIST_ROLES).map((r) => (
-                  <option key={r.role} value={r.role}>
-                    {r.role.toUpperCase()} — {r.can}
+                {Object.values(LIST_ROLES).map((role) => (
+                  <option key={role.role} value={role.role}>
+                    {role.role.toUpperCase()} - {role.can}
                   </option>
                 ))}
               </select>
