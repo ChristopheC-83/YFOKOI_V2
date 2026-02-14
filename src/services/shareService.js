@@ -78,12 +78,14 @@ export async function acceptShareRequest(listId, invitedId) {
 
 // Refuser : supprime simplement la demande
 export async function rejectShareRequest(listId, invitedId) {
-  const { error } = await supabase
+  // AJOUTE CE LOG ICI
+  console.log("Tentative de suppression de :", { listId, invitedId });
+
+  return await supabase
     .from("list_shares")
     .delete()
     .eq("list_id", listId)
     .eq("invited_id", invitedId);
-  return { error };
 }
 
 /**

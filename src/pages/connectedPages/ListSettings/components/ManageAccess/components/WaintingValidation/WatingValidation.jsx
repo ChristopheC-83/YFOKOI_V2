@@ -20,18 +20,19 @@ export default function WatingValidation({
       const { error } =
         action === "accept"
           ? await acceptShareRequest(listId, invitedId)
-          : await rejectShareRequest(listId, invitedId);
+                : await rejectShareRequest(listId, invitedId);
+        console.log("Action Result:", { action, listId, invitedId, error });
 
       if (error) throw error;
 
       toast.success(
-        action === "accept" ? "Nouveau membre ajouté !" : "Demande refusée",
+        action === "accept" ? "Nouveau membre ajouté !" : "Demande rejetée !",
       );
 
       // On demande au "cerveau" (ManageAccess) de rafraîchir les données
       if (onRefresh) onRefresh();
-    } catch (err) {
-      console.error(`Erreur lors de l'action ${action}:`, err);
+    } catch (error) {
+      console.error(`Erreur lors de l'action ${action}:`, error);
       toast.error("L'opération a échoué.");
     }
   };
