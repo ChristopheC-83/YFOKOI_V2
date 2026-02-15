@@ -1,24 +1,43 @@
 import Avatar from "@/pages/connectedPages/Profile/components/Avatar";
 import { useUserStore } from "@/store/user/useUserStore";
 import React from "react";
+import { FiRefreshCw } from "react-icons/fi"; // L'icône standard
 
-export default function HeaderList({ listsLength }) {
+export default function HeaderList({ listsLength, onRefresh, isRefreshing }) {
   const user = useUserStore((state) => state.user);
-
   const userName = user?.user_metadata?.name || "Toi";
+
   return (
     <header className="flex items-center justify-between mb-6">
       <div>
-        <h1 className="text-4xl md:text-5xl font-black text-clip uppercase tracking-tight flex flex-col gap-y-2">
+        <h1 className="text-4xl md:text-5xl font-black text-clip uppercase tracking-tight flex flex-col ">
           <span>Salut,</span> {userName} !
         </h1>
-        <p className="text-muted-foreground font-medium mt-2">
-          {listsLength > 0
-            ? `Tu as ${listsLength} liste${listsLength > 1 ? "s" : ""} en cours.`
-            : "Prêt à organiser tes listes ?"}
-        </p>
+
+        {/* Ligne de statut avec bouton refresh */}
+        <div className="flex items-center gap-2 mt-2">
+          <p className="text-muted-foreground font-medium">
+            {listsLength > 0
+              ? `Tu as ${listsLength} liste${listsLength > 1 ? "s" : ""} en cours.`
+              : "Prêt à organiser tes listes ?"}
+          </p>
+
+          <button
+            onClick={onRefresh}
+            disabled={isRefreshing}
+            className={`p-1.5 hover:bg-muted rounded-lg transition-all active:scale-90 ${
+              isRefreshing ? "opacity-50" : "text-primary"
+            }`}
+            title="Actualiser les listes"
+          >
+            <FiRefreshCw
+              size={16}
+              className={`${isRefreshing ? "animate-spin" : ""}`}
+            />
+          </button>
+        </div>
       </div>
-      <Avatar className="w-16 h-16 md:w-20 md:h-20" />
+      <Avatar className="w-16 h-16 md:w-20 md:h-20 border-2 border-border" />
     </header>
   );
 }

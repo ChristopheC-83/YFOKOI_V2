@@ -6,8 +6,11 @@ const useListStore = create((set, get) => ({
   lists: [],
   loading: false,
 
-  loadLists: async () => {
-    set({ loading: true });
+  // On ajoute le paramètre "silent" (par défaut à false)
+  loadLists: async (silent = false) => {
+    // On ne met loading à true QUE si on n'est pas en mode silencieux
+    if (!silent) set({ loading: true });
+
     try {
       const {
         data: { user },
@@ -15,10 +18,14 @@ const useListStore = create((set, get) => ({
       if (!user) throw new Error("Non authentifié");
 
       const data = await fetchUserLists(user.id);
+
+      // On met à jour les listes et on s'assure que loading repasse à false
       set({ lists: data, loading: false });
     } catch (error) {
       console.error(error);
       set({ lists: [], loading: false });
+      // Optionnel : on peut propager l'erreur pour le toast
+      throw error;
     }
   },
 

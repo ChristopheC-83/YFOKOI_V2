@@ -66,8 +66,6 @@ export async function fetchListById(id) {
   return { data, error };
 }
 
-
-
 /**
  * Supprime une liste par son ID
  */
@@ -91,5 +89,4 @@ export async function updateList(listId, updates) {
     error,
   };
 }
-
 

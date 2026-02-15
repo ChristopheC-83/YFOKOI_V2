@@ -9,13 +9,38 @@ import NoListFrame from "./components/NoListFrame/NoListFrame";
 import useListStore from "@/store/lists/useListStore";
 import { useUserStore } from "@/store/user/useUserStore";
 import NotificationBadge from "@/components/notificationBadge/NotificationBadge";
+import { toast } from "sonner";
 
 export default function Lists() {
   const { lists = [], loadLists, loading } = useListStore();
   const { user, isHydrated } = useUserStore(); // On récupère l'user et l'état du store
-
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  const handleRefresh = async () => {
+    // 1. On lance l'animation
+    setIsRefreshing(true);
+
+    try {
+      if (isHydrated && user) {
+        // 2. On attend VRAIMENT que les données arrivent
+        // Assure-toi que loadLists est bien "async" et retourne une promesse
+        await loadLists();
+
+        // 3. On ne crie victoire qu'une fois les données reçues
+        toast.success("Tableau de bord actualisé");
+      } else {
+        toast.error("Session non prête, réessaye dans un instant");
+      }
+    } catch (error) {
+      console.error("Erreur refresh dashboard:", error);
+      toast.error("Impossible de mettre à jour");
+    } finally {
+      // 4. On arrête l'animation dans tous les cas
+      setIsRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     // On ne charge les listes que si le store auth est prêt et l'user présent
@@ -33,7 +58,11 @@ export default function Lists() {
   return (
     <div className="max-w-md w-full mx-auto py-8 animate-in fade-in duration-700 slide-in-from-right">
       {/* HEADER : L'identité visuelle */}
-      <HeaderList listsLength={listsLength} />
+      <HeaderList
+        listsLength={lists.length}
+        onRefresh={handleRefresh}
+        isRefreshing={isRefreshing}
+      />
 
       {/* BODY : Gestion des états */}
       {loading ? (
