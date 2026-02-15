@@ -6,10 +6,23 @@ export default function ItemsList({
   onToggle,
   onDelete,
   onClearCompleted,
-  readOnly = false, // On récupère la prop du parent
+  userRole,
+  currentUserId,
+  readOnly,
 }) {
-  const activeItems = items.filter((i) => !i.is_checked);
-  const completedItems = items.filter((i) => i.is_checked);
+  const activeItems = items.filter((item) => !item.is_checked);
+  const completedItems = items.filter((item) => item.is_checked);
+
+  // ÉTAT 1 : La liste est absolument vide (aucun item créé)
+  if (items.length === 0) {
+    return (
+      <div className="text-center py-20 px-6 border-2 border-dashed border-border rounded-[2.5rem] opacity-50">
+        <p className="font-bold uppercase tracking-widest italic text-muted-foreground">
+          La liste est vide 🛒
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -22,13 +35,16 @@ export default function ItemsList({
               item={item}
               onToggle={onToggle}
               onDelete={onDelete}
-              readOnly={readOnly} // On transmet l'info
+              readOnly={readOnly}
+              userRole={userRole}
+              currentUserId={currentUserId} // <--- N'oublie pas de le passer ici !
             />
           ))
         ) : (
-          <div className="text-center py-16 px-6 border-2 border-dashed border-border rounded-[2.5rem] opacity-50">
-            <p className="font-bold uppercase tracking-tight italic">
-              La liste est vide 🛒
+          // ÉTAT 2 : Tout a été coché
+          <div className="py-8 text-center bg-primary/5 rounded-[2rem] border border-primary/10">
+            <p className="text-sm font-bold text-primary italic">
+              Bravo, tout est dans le panier ! 🎉
             </p>
           </div>
         )}
@@ -42,8 +58,8 @@ export default function ItemsList({
               ça, c'est fait !
             </h2>
 
-            {/* Condition : On ne montre le bouton "vider" que si on n'est pas en lecture seule */}
-            {!readOnly && (
+            {/* Seuls Owner et Modo peuvent vider la liste complète des cochés */}
+            {!readOnly && (userRole === "owner" || userRole === "modo") && (
               <button
                 onClick={onClearCompleted}
                 className="text-[10px] font-black text-red-400 hover:text-red-500 uppercase tracking-widest pb-1 transition-colors"
@@ -61,7 +77,9 @@ export default function ItemsList({
                 onToggle={onToggle}
                 onDelete={onDelete}
                 isCompleted
-                readOnly={readOnly} // On transmet l'info
+                readOnly={readOnly}
+                userRole={userRole}
+                currentUserId={currentUserId} // <--- Et ici aussi !
               />
             ))}
           </div>

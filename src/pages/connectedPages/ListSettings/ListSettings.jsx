@@ -10,10 +10,12 @@ import DeleteListButton from "./components/DeleteListButton/DeleteListButton";
 import useListStore from "@/store/lists/useListStore";
 import ManageAccess from "./components/ManageAccess/ManageAccess";
 import { X } from "lucide-react";
+import { useUserStore } from "@/store/user/useUserStore";
 
 export default function ListSettings() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useUserStore();
 
   // On récupère la liste depuis le store
   const list = useListStore((state) => state.getListById(id));
@@ -23,17 +25,27 @@ export default function ListSettings() {
   // On initialise à TRUE pour bloquer l'affichage de "Liste introuvable" trop tôt
   const [loading, setLoading] = useState(true);
 
+
+  //  accés seulement au prprio
+  const isOwner = list?.owner_id === user?.id;
+
+  useEffect(() => {
+    // Si le chargement est fini, que la liste existe, mais que le user n'est pas le boss
+    if (!loading && list && !isOwner) {
+      toast.error("Zone réservée au propriétaire de la liste.");
+      navigate(`/list/${id}`, { replace: true });
+    }
+  }, [loading, list, isOwner, id, navigate]);
+
   useEffect(() => {
     async function loadData() {
       if (!id) return;
-
       setLoading(true);
       try {
         await refreshList(id);
       } catch (err) {
         console.error("Erreur de chargement", err);
       } finally {
-        // On ne libère l'écran qu'une fois que l'appel API est terminé
         setLoading(false);
       }
     }

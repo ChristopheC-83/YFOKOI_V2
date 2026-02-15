@@ -4,7 +4,7 @@ import { FiChevronLeft, FiSettings } from "react-icons/fi";
 import { getIconById } from "@/config/icons";
 import NotificationBadge from "@/components/notificationBadge/NotificationBadge";
 
-export default function ListHeader({ title, iconId, listId, hasNotification, canManage }) {
+export default function ListHeader({ title, iconId, listId, hasNotification, isOwner }) {
   const navigate = useNavigate();
   console.log(hasNotification);
 
@@ -27,13 +27,15 @@ export default function ListHeader({ title, iconId, listId, hasNotification, can
       </div>
 
       {/* Bouton Paramètres (placeholder pour l'instant) */}
-      {canManage && <button
-        className="p-3 bg-card border border-border rounded-2xl shadow-sm hover:bg-primary/10 transition-colors text-clip-2 relative"
-        onClick={() => navigate(`/list/${listId}/settings`)}
-      >
-        <FiSettings size={24} />
-        {hasNotification && <NotificationBadge />}
-      </button>}
+      {isOwner && (
+        <button
+          className="p-3 bg-card border border-border rounded-2xl shadow-sm hover:bg-primary/10 transition-colors text-clip-2 relative"
+          onClick={() => navigate(`/list/${listId}/settings`)}
+        >
+          <FiSettings size={24} />
+          {hasNotification && <NotificationBadge />}
+        </button>
+      )}
     </header>
   );
 }

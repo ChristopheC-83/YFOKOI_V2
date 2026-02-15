@@ -21,19 +21,21 @@ export async function fetchItems(listId) {
 }
 
 export async function addItem({ listId, label, userId, category = "divers" }) {
-  return await supabase
+  const { data, error } = await supabase
     .from("items")
     .insert([
       {
         list_id: listId,
         label: label.trim(),
-        added_by: userId,
+        created_by: userId, 
         category: category,
         is_checked: false,
       },
     ])
-    .select()
+    .select() 
     .single();
+
+  return { data, error }; 
 }
 
 export async function toggleItemStatus(itemId, currentStatus) {

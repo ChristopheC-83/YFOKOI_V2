@@ -155,7 +155,7 @@ export default function ListDetail() {
         iconId={listInfo.icon}
         listId={id}
         hasNotification={hasPendingRequests}
-        canManage={canManage}
+        isOwner={isOwner}
       />
       {canEdit && (
         <AddItemInput
@@ -166,12 +166,12 @@ export default function ListDetail() {
 
       <ItemsList
         items={items}
-        onToggle={
-          canEdit ? handleToggle : () => toast.error("Droits insuffisants")
-        }
-        onDelete={canEdit ? handleDeleteItem : null}
-        onClearCompleted={canEdit ? handleClearCompleted : null}
-        readOnly={!canEdit}
+        onToggle={handleToggle} // On passe la fonction brute
+        onDelete={handleDeleteItem}
+        onClearCompleted={handleClearCompleted}
+        userRole={userRole}
+        currentUserId={user?.id} // Obligatoire pour la comparaison
+        readOnly={userRole === "read"}
       />
     </main>
   );
