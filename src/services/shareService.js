@@ -101,3 +101,15 @@ export async function updateMemberRole(listId, invitedId, newRole) {
     .select();
 }
 
+
+//  quitter une liste
+
+export async function leaveList(listId, userId) {
+  const { data, error } = await supabase
+    .from("list_shares")
+    .delete()
+    .eq("list_id", listId)
+    .eq("invited_id", userId);
+
+  return { data, error };
+}

@@ -19,6 +19,7 @@ import ItemsList from "./components/ItemsList/ItemsList";
 import AddItemInput from "./components/AddItemInput/AddItemInput";
 import ListHeader from "./components/ListHeader/ListHeader";
 import { useUserStore } from "@/store/user/useUserStore";
+import { leaveList } from "@/services/shareService";
 
 export default function ListDetail() {
   const { id } = useParams();
@@ -141,6 +142,13 @@ export default function ListDetail() {
     }
   }
 
+  const handleLeave = async () => {
+    if (window.confirm("Quitter cette liste définitivement ?")) {
+      const { error } = await leaveList(id, user.id);
+      if (!error) navigate("/lists", { replace: true });
+    }
+  };
+
   if (loading)
     return (
       <div className="p-20 text-center font-black animate-pulse">
@@ -156,6 +164,7 @@ export default function ListDetail() {
         listId={id}
         hasNotification={hasPendingRequests}
         isOwner={isOwner}
+        onLeave={handleLeave}
       />
       {canEdit && (
         <AddItemInput
