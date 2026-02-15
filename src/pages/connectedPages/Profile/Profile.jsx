@@ -8,6 +8,7 @@ import NameForm from "./components/NameForm";
 import { toast } from "sonner";
 import { dictionaryService } from "@/services/dictionaryService";
 import DictionaryModal from "./components/DictionnaryModal";
+import { ModeToggle } from "@/components/provider/ModeToggle";
 
 export default function Profile() {
   const { logout } = useUserStore();
@@ -47,7 +48,10 @@ export default function Profile() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh]  animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-      <Avatar />
+      <div className="flex items-center justify-evenly w-full max-w-md mb-8">
+        <Avatar />
+        <ModeToggle/>
+      </div>
 
       <div className="w-full max-w-md bg-card p-3 md:p-8 rounded-3xl border border-border shadow-sm space-y-6">
         <h1 className="text-2xl font-black text-center text-clip">

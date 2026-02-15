@@ -15,7 +15,7 @@ export default function Avatar() {
   const initial = name ? name.charAt(0).toUpperCase() : "?";
 
   return (
-    <div className="relative group mb-8">
+    <div className="relative group">
       <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-clip flex items-center justify-center text-white text-4xl md:text-5xl font-black shadow-xl shadow-primary/20 png-shadow">
         {initial}
       </div>

@@ -56,7 +56,7 @@ export default function Lists() {
   if (!isHydrated) return null;
 
   return (
-    <div className="max-w-md w-full mx-auto py-8 animate-in fade-in duration-700 slide-in-from-right">
+    <div className="max-w-md w-full mx-auto pb-30 animate-in fade-in duration-700 slide-in-from-right">
       {/* HEADER : L'identité visuelle */}
       <HeaderList
         listsLength={lists.length}

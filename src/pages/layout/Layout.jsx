@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase"; // Ton instance
 import { useUserStore } from "@/store/user/useUserStore";
 import Navbar from "@/components/navbar/Navbar";
 import Loader from "@/components/loaders/Loader";
+import InstallPWA from "@/InstallPWA";
 
 export default function Layout() {
   const { user, setUser, isHydrated } = useUserStore();
@@ -36,6 +37,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-dvh w-full overflow-hidden bg-background text-foreground font-sans">
+      <InstallPWA />
       <Toaster position="top-center" richColors />
       <main className="flex max-md:flex-col md:pl-44 md:pr-3 min-h-dvh">
         <Navbar />

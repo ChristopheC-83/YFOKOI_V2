@@ -36,7 +36,7 @@ export function ModalJoinList({ refreshLists }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <button className=" w-1/3 bg-secondary text-primary-foreground font-black  flex items-center justify-center rounded-2xl shadow-lg shadow-primary/20 active:scale-95 transition-all gap-2 cursor-pointer mb-2 text-md">
+        <button className=" w-1/3 min-w-31.25 bg-secondary text-primary-foreground font-black  flex items-center justify-center rounded-2xl shadow-lg shadow-primary/20 active:scale-95 transition-all gap-2 cursor-pointer mb-2 text-md">
           <FiHash className="size-5 text-primary-foreground shrink-0 text-md " />
           Rejoindre !
         </button>
