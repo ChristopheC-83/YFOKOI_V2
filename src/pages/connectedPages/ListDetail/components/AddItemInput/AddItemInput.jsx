@@ -18,12 +18,25 @@ export default function AddItemInput({ listId, onItemAdded }) {
     setSuggestions(dictionaryService.search(val));
   };
 
-  async function handleAdd(text) {
+  // Remplace ton handleAdd par cette distinction :
+
+  const handleSelectSuggestion = (word) => {
+    // 1. On remplit l'input avec la suggestion
+    setLabel(word);
+
+    // 2. On ferme le menu des suggestions
+    setSuggestions([]);
+
+    // 3. On redonne le focus à l'input pour qu'elle puisse continuer à taper
+    inputRef.current?.focus();
+  };
+
+  // La fonction handleAdd, elle, ne sert plus qu'au submit final (bouton ou entrée)
+  async function handleSubmitFinal(text) {
     const cleanLabel = text.trim();
     if (!cleanLabel || isAdding) return;
 
     setIsAdding(true);
-    setSuggestions([]);
 
     const { data, error } = await addItem({
       listId,
@@ -32,12 +45,12 @@ export default function AddItemInput({ listId, onItemAdded }) {
     });
 
     if (error) {
-      toast.error("Impossible d'ajouter l'article");
+      toast.error("Erreur d'ajout");
     } else {
       onItemAdded(data);
       dictionaryService.add(cleanLabel);
       setLabel("");
-      inputRef.current?.focus();
+      setSuggestions([]);
     }
     setIsAdding(false);
   }
@@ -47,7 +60,7 @@ export default function AddItemInput({ listId, onItemAdded }) {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          handleAdd(label);
+          handleSubmitFinal(label);
         }}
         className="relative z-20"
       >
@@ -75,12 +88,13 @@ export default function AddItemInput({ listId, onItemAdded }) {
           {suggestions.map((suggestion, index) => (
             <button
               key={index}
-              onClick={() => handleAdd(suggestion)}
-              className="w-full text-left px-4 py-4 hover:bg-primary hover:text-primary-foreground transition-colors font-bold capitalize border-b border-border/50 last:border-none flex items-center justify-between"
+              type="button" // Important pour ne pas trigger le submit du form
+              onClick={() => handleSelectSuggestion(suggestion)}
+              className="w-full text-left px-4 py-4 hover:bg-primary/10 transition-colors font-bold capitalize border-b border-border/50 last:border-none flex items-center justify-between"
             >
               {suggestion}
-              <span className="text-[10px] opacity-50 font-normal italic">
-                Suggéré
+              <span className="text-[10px] opacity-30">
+                cliquer pour remplir
               </span>
             </button>
           ))}

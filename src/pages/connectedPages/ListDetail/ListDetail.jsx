@@ -5,10 +5,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 // Services
-import { deleteList, fetchListById } from "@/services/crud_list";
+import { fetchListById } from "@/services/crud_list";
 import {
   fetchItems,
-  addItem,
   toggleItemStatus,
   deleteItem,
   deleteCheckedItems,
@@ -24,6 +23,7 @@ import { leaveList } from "@/services/shareService";
 export default function ListDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [listInfo, setListInfo] = useState(null);
   const [items, setItems] = useState([]);
@@ -52,36 +52,35 @@ export default function ListDetail() {
   const canManage = ["owner", "modo"].includes(userRole);
   const isReadOnly = userRole === "read";
 
-  async function fetchData() {
-    setLoading(true);
+ async function fetchData() {
+   setLoading(true);
 
-    // On récupère la structure de la liste
-    const { data: list, error: listError } = await fetchListById(id);
+   // 1. On vérifie l'existence de la liste (Le Parent)
+   const { data: list, error: listError } = await fetchListById(id);
 
-    if (listError || !list) {
-      toast.error("Liste introuvable");
-      return navigate("/lists");
-    }
+   // Si erreur ou liste supprimée par le Owner
+   if (listError || !list) {
+     toast.error("Cette liste n'existe plus.");
+     navigate("/lists", { replace: true });
+     return false; // ❌ ÉCHEC
+   }
 
-    setListInfo(list);
+   setListInfo(list);
 
-    // On récupère les items (label, is_checked, etc.)
-    const { data: itemsData, error: itemsError } = await fetchItems(id);
+   // 2. On récupère les items (Les Enfants)
+   const { data: itemsData, error: itemsError } = await fetchItems(id);
 
-    if (itemsError) {
-      console.error("Erreur chargement items:", itemsError);
-      toast.error("Impossible de charger les articles");
-      setItems([]); // Sécurité
-    } else {
-      setItems(itemsData || []); // On s'assure que c'est toujours un tableau
-    }
+   if (itemsError) {
+     toast.error("Erreur de synchronisation des articles");
+     setItems([]);
+     setLoading(false);
+     return false; // ❌ ÉCHEC
+   }
 
-    if (!itemsError) {
-      setItems(itemsData);
-    }
-
-    setLoading(false);
-  }
+   setItems(itemsData || []);
+   setLoading(false);
+   return true;
+ }
 
   useEffect(() => {
     fetchData();
@@ -149,6 +148,23 @@ export default function ListDetail() {
     }
   };
 
+  async function handleRefresh() {
+    setIsRefreshing(true);
+    try {
+      // On appelle la fonction qui vérifie TOUT (Liste + Items)
+      // Elle gère déjà la redirection vers /lists si la liste est morte
+      const success = await fetchData(true);
+      if (success) {
+        toast.success("Liste actualisée");
+      }
+    } catch (err) {
+      console.error("DEBUG REFRESH - Error:", err);
+      toast.error("Synchro impossible");
+    } finally {
+      setIsRefreshing(false);
+    }
+  }
+
   if (loading)
     return (
       <div className="p-20 text-center font-black animate-pulse">
@@ -165,6 +181,8 @@ export default function ListDetail() {
         hasNotification={hasPendingRequests}
         isOwner={isOwner}
         onLeave={handleLeave}
+        onRefresh={handleRefresh}
+        isRefreshing={isRefreshing}
       />
       {canEdit && (
         <AddItemInput

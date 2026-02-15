@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FiChevronLeft, FiSettings, FiLogOut } from "react-icons/fi";
 import { getIconById } from "@/config/icons";
 import NotificationBadge from "@/components/notificationBadge/NotificationBadge";
+import { FiRefreshCw } from "react-icons/fi";
 
 export default function ListHeader({
   title,
@@ -11,6 +12,8 @@ export default function ListHeader({
   hasNotification,
   isOwner,
   onLeave,
+  isRefreshing,
+  onRefresh,
 }) {
   const navigate = useNavigate();
   console.log(hasNotification);
@@ -33,24 +36,37 @@ export default function ListHeader({
         </h1>
       </div>
 
-      {/* Action Droite : Settings pour l'Owner OU Leave pour l'Invité */}
-      {isOwner ? (
+      {/* On l'ajoute par exemple à gauche du bouton Settings/Leave */}
+      <div className="flex items-center gap-2">
         <button
-          className="p-3 bg-card border border-border rounded-2xl shadow-sm hover:bg-primary/10 transition-colors relative cursor-pointer"
-          onClick={() => navigate(`/list/${listId}/settings`)}
+          onClick={onRefresh}
+          disabled={isRefreshing}
+          className={`p-3 bg-card border border-border rounded-2xl shadow-sm hover:bg-muted transition-all ${isRefreshing ? "opacity-50" : ""}`}
         >
-          <FiSettings size={24} />
-          {hasNotification && <NotificationBadge />}
+          <FiRefreshCw
+            size={20}
+            className={isRefreshing ? "animate-spin" : ""}
+          />
         </button>
-      ) : (
-        <button
-          className="p-3 bg-card border rounded-2xl shadow-sm hover:bg-red-500/10 text-red-500 border-red-500/20 transition-colors cursor-pointer"
-          onClick={onLeave}
-          title="Quitter la liste"
-        >
-          <FiLogOut size={24} />
-        </button>
-      )}
+        {/* Action Droite : Settings pour l'Owner OU Leave pour l'Invité */}
+        {isOwner ? (
+          <button
+            className="p-3 bg-card border border-border rounded-2xl shadow-sm hover:bg-primary/10 transition-colors relative cursor-pointer"
+            onClick={() => navigate(`/list/${listId}/settings`)}
+          >
+            <FiSettings size={24} />
+            {hasNotification && <NotificationBadge />}
+          </button>
+        ) : (
+          <button
+            className="p-3 bg-card border rounded-2xl shadow-sm hover:bg-red-500/10 text-red-500 border-red-500/20 transition-colors cursor-pointer"
+            onClick={onLeave}
+            title="Quitter la liste"
+          >
+            <FiLogOut size={24} />
+          </button>
+        )}
+      </div>
     </header>
   );
 }
