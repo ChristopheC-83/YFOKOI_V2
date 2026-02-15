@@ -2,12 +2,11 @@ import React from "react";
 import { getIconById } from "@/config/icons";
 import { FiChevronRight } from "react-icons/fi";
 
-export default function ListCard({ list, onClick }) {
+export default function ListCard({ list }) {
   const Icon = getIconById(list.icon);
 
   return (
-    <button
-      onClick={() => onClick(list.id)}
+    <div
       className="group relative w-full bg-card border border-border/90 p-1 rounded-2xl flex items-center  transition-all hover:scale-[1.02] shadow-2xl active:scale-[0.98] text-left cursor-pointer"
     >
       {/* L'icône avec un cercle de fond stylé */}
@@ -24,8 +23,8 @@ export default function ListCard({ list, onClick }) {
 
       {/* Flèche d'indication */}
       <div className="size-14 flex items-center justify-center text-muted-foreground group-hover:translate-x-1 transition-transform border-l ">
-        <FiChevronRight size={20} />
+        <FiChevronRight size={20} /> 
       </div>
-    </button>
+    </div>
   );
 }

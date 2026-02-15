@@ -34,8 +34,23 @@ export default function ListDetail() {
     isOwner &&
     listInfo?.list_shares?.some((share) => share.status === "pending")
   );
+  // Dans ListDetail.jsx, après avoir récupéré listInfo et user
+  const userMemberInfo = listInfo?.list_shares?.find(
+    (share) => share.invited_id === user?.id,
+  );
 
-  // Notre fameux fetchData
+  // Le rôle est soit celui du partage, soit 'owner' si c'est le créateur
+  const userRole = isOwner
+    ? "owner"
+    : userMemberInfo?.status === "accepted"
+      ? userMemberInfo.role
+      : null;
+
+  // Définition des permissions (Capacités)
+  const canEdit = ["owner", "modo", "edit"].includes(userRole);
+  const canManage = ["owner", "modo"].includes(userRole);
+  const isReadOnly = userRole === "read";
+
   async function fetchData() {
     setLoading(true);
 
@@ -51,6 +66,14 @@ export default function ListDetail() {
 
     // On récupère les items (label, is_checked, etc.)
     const { data: itemsData, error: itemsError } = await fetchItems(id);
+
+    if (itemsError) {
+      console.error("Erreur chargement items:", itemsError);
+      toast.error("Impossible de charger les articles");
+      setItems([]); // Sécurité
+    } else {
+      setItems(itemsData || []); // On s'assure que c'est toujours un tableau
+    }
 
     if (!itemsError) {
       setItems(itemsData);
@@ -131,18 +154,24 @@ export default function ListDetail() {
         title={listInfo.title}
         iconId={listInfo.icon}
         listId={id}
-        hasNotification={hasPendingRequests} 
+        hasNotification={hasPendingRequests}
+        canManage={canManage}
       />
-      <AddItemInput
-        listId={id}
-        onItemAdded={(newItem) => setItems([newItem, ...items])}
-      />
+      {canEdit && (
+        <AddItemInput
+          listId={id}
+          onItemAdded={(newItem) => setItems([newItem, ...items])}
+        />
+      )}
 
       <ItemsList
         items={items}
-        onToggle={handleToggle}
-        onDelete={handleDeleteItem}
-        onClearCompleted={handleClearCompleted}
+        onToggle={
+          canEdit ? handleToggle : () => toast.error("Droits insuffisants")
+        }
+        onDelete={canEdit ? handleDeleteItem : null}
+        onClearCompleted={canEdit ? handleClearCompleted : null}
+        readOnly={!canEdit}
       />
     </main>
   );

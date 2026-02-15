@@ -1,11 +1,15 @@
 import React from "react";
 import ItemRow from "./components/ItemRow/ItemRow";
 
-export default function ItemsList({ items, onToggle, onDelete, onClearCompleted }) {
-  // Découpe logique des données
+export default function ItemsList({
+  items,
+  onToggle,
+  onDelete,
+  onClearCompleted,
+  readOnly = false, // On récupère la prop du parent
+}) {
   const activeItems = items.filter((i) => !i.is_checked);
   const completedItems = items.filter((i) => i.is_checked);
-  console.log(completedItems);
 
   return (
     <div className="flex flex-col gap-8">
@@ -18,6 +22,7 @@ export default function ItemsList({ items, onToggle, onDelete, onClearCompleted 
               item={item}
               onToggle={onToggle}
               onDelete={onDelete}
+              readOnly={readOnly} // On transmet l'info
             />
           ))
         ) : (
@@ -31,18 +36,23 @@ export default function ItemsList({ items, onToggle, onDelete, onClearCompleted 
 
       {/* SECTION : DÉJÀ PRIS */}
       {completedItems.length > 0 && (
-        <section className="pt-6 border-t border-dashed border-border/50 ">
-          <div className="w-full flex gap-3  items-center justify-between pb-2">
-            <h2 className="text-sm font-black text-muted-foreground uppercase tracking-widest ml-4 ">
-              ça, cest fait !
+        <section className="pt-6 border-t border-dashed border-border/50">
+          <div className="w-full flex gap-3 items-center justify-between pb-2">
+            <h2 className="text-sm font-black text-muted-foreground uppercase tracking-widest ml-4">
+              ça, c'est fait !
             </h2>
-            <button
-              onClick={onClearCompleted}
-              className="text-sm font-black text-muted-foreground tracking-widest pb-1"
-            >
-              on vide tout ça ?
-            </button>
+
+            {/* Condition : On ne montre le bouton "vider" que si on n'est pas en lecture seule */}
+            {!readOnly && (
+              <button
+                onClick={onClearCompleted}
+                className="text-[10px] font-black text-red-400 hover:text-red-500 uppercase tracking-widest pb-1 transition-colors"
+              >
+                on vide tout ça ?
+              </button>
+            )}
           </div>
+
           <div className="space-y-2">
             {completedItems.map((item) => (
               <ItemRow
@@ -51,6 +61,7 @@ export default function ItemsList({ items, onToggle, onDelete, onClearCompleted 
                 onToggle={onToggle}
                 onDelete={onDelete}
                 isCompleted
+                readOnly={readOnly} // On transmet l'info
               />
             ))}
           </div>
