@@ -25,9 +25,20 @@ export default function ListSettings() {
   // On initialise à TRUE pour bloquer l'affichage de "Liste introuvable" trop tôt
   const [loading, setLoading] = useState(true);
 
-
   //  accés seulement au prprio
   const isOwner = list?.owner_id === user?.id;
+
+  const handleRefreshSettings = async () => {
+    if (!id) return;
+    setLoading(true);
+    try {
+      await refreshList(id);
+    } catch (err) {
+      console.error("Erreur de chargement", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     // Si le chargement est fini, que la liste existe, mais que le user n'est pas le boss
@@ -104,7 +115,7 @@ export default function ListSettings() {
   return (
     <main className="max-w-md w-full mx-auto pb-40 animate-in fade-in duration-300 slide-in-from-right ">
       {/* Header simplifié pour les réglages */}
-      <HeaderListSettings onClick={() => navigate(-1)} />
+      <HeaderListSettings onClick={() => navigate(-1)} onRefresh={handleRefreshSettings} isRefreshing={loading} />
 
       <div className="space-y-6">
         {/* SECTION : ÉDITION (NOM / ICÔNE) */}
