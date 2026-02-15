@@ -9,6 +9,12 @@ export const dictionaryService = {
     }
   },
 
+  set: (words) => {
+    if (!Array.isArray(words)) return;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(words));
+  },
+
+
   add(word) {
     if (!word || word.trim().length < 2) return;
     const dict = this.get();
@@ -32,4 +38,8 @@ export const dictionaryService = {
 
     return [...startsWith, ...contains].slice(0, 5);
   },
+
+  clear: () => {
+    localStorage.removeItem('shopping_dict');
+  }
 };

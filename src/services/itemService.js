@@ -4,11 +4,7 @@ import { supabase } from "@/lib/supabase";
  * Récupère les détails d'une seule liste par son ID
  */
 export async function fetchListById(id) {
-  return await supabase
-    .from("lists")
-    .select("*")
-    .eq("id", id)
-    .single();
+  return await supabase.from("lists").select("*").eq("id", id).single();
 }
 
 export async function fetchItems(listId) {
@@ -16,7 +12,7 @@ export async function fetchItems(listId) {
     .from("items")
     .select("*")
     .eq("list_id", listId)
-    .order("sort_order", { ascending: true }) // Utilisation de ta colonne de tri
+    .order("label", { ascending: true })
     .order("created_at", { ascending: true });
 }
 
@@ -27,15 +23,15 @@ export async function addItem({ listId, label, userId, category = "divers" }) {
       {
         list_id: listId,
         label: label.trim(),
-        created_by: userId, 
+        created_by: userId,
         category: category,
         is_checked: false,
       },
     ])
-    .select() 
+    .select()
     .single();
 
-  return { data, error }; 
+  return { data, error };
 }
 
 export async function toggleItemStatus(itemId, currentStatus) {
@@ -51,11 +47,8 @@ export async function toggleItemStatus(itemId, currentStatus) {
  * Supprime un article de la liste
  */
 export async function deleteItem(itemId) {
-  const { error } = await supabase
-    .from("items")
-    .delete()
-    .eq("id", itemId);
-    
+  const { error } = await supabase.from("items").delete().eq("id", itemId);
+
   return { error };
 }
 

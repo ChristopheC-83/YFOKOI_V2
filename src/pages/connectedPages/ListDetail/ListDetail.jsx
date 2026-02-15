@@ -19,6 +19,7 @@ import AddItemInput from "./components/AddItemInput/AddItemInput";
 import ListHeader from "./components/ListHeader/ListHeader";
 import { useUserStore } from "@/store/user/useUserStore";
 import { leaveList } from "@/services/shareService";
+import { sortItems } from "@/services/sort";
 
 export default function ListDetail() {
   const { id } = useParams();
@@ -52,35 +53,37 @@ export default function ListDetail() {
   const canManage = ["owner", "modo"].includes(userRole);
   const isReadOnly = userRole === "read";
 
- async function fetchData() {
-   setLoading(true);
 
-   // 1. On vérifie l'existence de la liste (Le Parent)
-   const { data: list, error: listError } = await fetchListById(id);
 
-   // Si erreur ou liste supprimée par le Owner
-   if (listError || !list) {
-     toast.error("Cette liste n'existe plus.");
-     navigate("/lists", { replace: true });
-     return false; // ❌ ÉCHEC
-   }
+  async function fetchData() {
+    setLoading(true);
 
-   setListInfo(list);
+    // 1. On vérifie l'existence de la liste (Le Parent)
+    const { data: list, error: listError } = await fetchListById(id);
 
-   // 2. On récupère les items (Les Enfants)
-   const { data: itemsData, error: itemsError } = await fetchItems(id);
+    // Si erreur ou liste supprimée par le Owner
+    if (listError || !list) {
+      toast.error("Cette liste n'existe plus.");
+      navigate("/lists", { replace: true });
+      return false; // ❌ ÉCHEC
+    }
 
-   if (itemsError) {
-     toast.error("Erreur de synchronisation des articles");
-     setItems([]);
-     setLoading(false);
-     return false; // ❌ ÉCHEC
-   }
+    setListInfo(list);
 
-   setItems(itemsData || []);
-   setLoading(false);
-   return true;
- }
+    // 2. On récupère les items (Les Enfants)
+    const { data: itemsData, error: itemsError } = await fetchItems(id);
+
+    if (itemsError) {
+      toast.error("Erreur de synchronisation des articles");
+      setItems([]);
+      setLoading(false);
+      return false; // ❌ ÉCHEC
+    }
+
+    setItems(itemsData || []);
+    setLoading(false);
+    return true;
+  }
 
   useEffect(() => {
     fetchData();
@@ -187,7 +190,7 @@ export default function ListDetail() {
       {canEdit && (
         <AddItemInput
           listId={id}
-          onItemAdded={(newItem) => setItems([newItem, ...items])}
+          onItemAdded={(newItem) => setItems(prev => sortItems([...prev, newItem]))}
         />
       )}
 

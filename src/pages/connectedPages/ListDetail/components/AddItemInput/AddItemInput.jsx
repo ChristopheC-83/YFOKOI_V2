@@ -18,8 +18,6 @@ export default function AddItemInput({ listId, onItemAdded }) {
     setSuggestions(dictionaryService.search(val));
   };
 
-  // Remplace ton handleAdd par cette distinction :
-
   const handleSelectSuggestion = (word) => {
     // 1. On remplit l'input avec la suggestion
     setLabel(word);
@@ -31,7 +29,6 @@ export default function AddItemInput({ listId, onItemAdded }) {
     inputRef.current?.focus();
   };
 
-  // La fonction handleAdd, elle, ne sert plus qu'au submit final (bouton ou entrée)
   async function handleSubmitFinal(text) {
     const cleanLabel = text.trim();
     if (!cleanLabel || isAdding) return;
