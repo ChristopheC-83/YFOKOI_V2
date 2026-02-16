@@ -16,7 +16,7 @@ export default function Avatar() {
 
   return (
     <div className="relative group">
-      <div className="size-22 md:size-30 rounded-full bg-clip flex items-center justify-center text-white text-4xl md:text-5xl font-black shadow-xl shadow-primary/20 png-shadow">
+      <div className="size-20 md:size-26 rounded-full bg-clip flex items-center justify-center text-white text-4xl md:text-5xl font-black shadow-xl shadow-primary/20 png-shadow">
         {initial}
       </div>
       <div className="absolute -bottom-2 -right-2 bg-background p-2 rounded-full border-2 border-border">

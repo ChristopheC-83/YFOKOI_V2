@@ -44,9 +44,9 @@ export default function NameForm() {
       </h1>
     );
 
-  if (isHydrated && name === "" && currentName !== "") {
-    setName(currentName);
-  }
+  // if (isHydrated && name === "" && currentName !== "") {
+  //   setName(currentName);
+  // }
 
   return (
     <form onSubmit={handleUpdateProfile} className="space-y-6">
@@ -83,7 +83,7 @@ export default function NameForm() {
       <button
         type="submit"
         disabled={loading || !name}
-        className="w-full bg-primary text-primary-foreground font-black py-4 rounded-2xl shadow-lg shadow-primary/20 hover:brightness-110 active:scale-[0.97] transition-all disabled:opacity-50 disabled:grayscale cursor-pointer"
+        className={`w-full bg-primary text-primary-foreground font-black py-4 rounded-2xl shadow-lg shadow-primary/20 hover:brightness-110 active:scale-[0.97] transition-all disabled:opacity-50 disabled:grayscale cursor-pointer ${name.length > 2 ? "opacity-100 " : "opacity-30 disabled:grayscale pointer-events-none"}`}
       >
         {loading ? "ENREGISTREMENT..." : "VALIDER MON PROFIL"}
       </button>

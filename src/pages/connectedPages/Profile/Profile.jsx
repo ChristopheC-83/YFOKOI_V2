@@ -48,12 +48,12 @@ export default function Profile() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh]  animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-      <div className="flex items-center justify-evenly w-full max-w-md mb-8">
+      <div className="flex items-center justify-evenly w-full max-w-md mb-6">
         <Avatar />
         <ModeToggle/>
       </div>
 
-      <div className="w-full max-w-md bg-card p-3 md:p-8 rounded-3xl border border-border shadow-sm space-y-6">
+      <div className="w-full max-w-md bg-card p-3 md:p-5 rounded-2xl border border-border shadow-sm space-y-4">
         <h1 className="text-2xl font-black text-center text-clip">
           MON PROFIL
         </h1>
