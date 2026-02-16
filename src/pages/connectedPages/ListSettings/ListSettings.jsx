@@ -117,7 +117,7 @@ export default function ListSettings() {
       {/* Header simplifié pour les réglages */}
       <HeaderListSettings onClick={() => navigate(-1)} onRefresh={handleRefreshSettings} isRefreshing={loading} />
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* SECTION : ÉDITION (NOM / ICÔNE) */}
         <EditList list={list} />
 

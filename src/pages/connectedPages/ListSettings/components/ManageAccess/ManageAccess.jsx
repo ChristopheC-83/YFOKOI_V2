@@ -51,7 +51,7 @@ export default function ManageAccess({ list, onRefresh }) {
     list?.list_shares?.filter((s) => s.status === "accepted") || [];
 
   return (
-    <section className="bg-card border border-border rounded-2xl p-3 shadow-sm space-y-8">
+    <section className="bg-card border border-border rounded-2xl p-3 shadow-sm space-y-4">
       <h2 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
         Gestion des accès
       </h2>

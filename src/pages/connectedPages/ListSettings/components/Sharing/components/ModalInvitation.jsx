@@ -7,7 +7,7 @@ export function ModalInvitation({ list }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-secondary/50 transition-colors group">
+        <button className="w-full flex items-center justify-between p-1 rounded-2xl hover:bg-secondary/50 transition-colors group">
           <div className="flex items-center gap-3">
             <div className="bg-primary/10 p-2 rounded-xl group-hover:bg-primary/20 transition-colors">
               <FiUsers className="text-primary" />

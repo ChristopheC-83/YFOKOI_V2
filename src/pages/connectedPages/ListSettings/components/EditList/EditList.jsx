@@ -53,8 +53,8 @@ export default function EditList({ list }) {
 
   return (
     <section className="bg-card border border-border rounded-2xl p-3 shadow-sm">
-      <h2 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-6">
-        Général
+      <h2 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-4">
+        Changer le nom de la liste ?
       </h2>
 
       <form onSubmit={handleSave} className="space-y-6">
@@ -71,8 +71,10 @@ export default function EditList({ list }) {
             placeholder="Nom de la liste..."
           />
         </div>
-
         {/* GRILLE D'ICÔNES : Sélection visuelle forte */}
+        <h2 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-4">
+          Changer d'icone ?
+        </h2>
         <div className="grid grid-cols-4 gap-2">
           {AVAILABLE_ICONS.map((item) => (
             <button
@@ -89,28 +91,26 @@ export default function EditList({ list }) {
             </button>
           ))}
         </div>
-
         {/* BOUTON DE VALIDATION : Apparaît uniquement si nécessaire */}
-        <div className="h-16 flex items-end">
-          {" "}
-          {/* Container fixe pour éviter les sauts de layout */}
-          {hasChanged && (
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-primary text-white font-black py-4 rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center gap-2 active:scale-95 transition-all animate-in zoom-in-95 duration-200"
-            >
-              {loading ? (
-                <FiLoader className="animate-spin" size={20} />
-              ) : (
-                <>
-                  <FiCheck size={20} />
-                  ENREGISTRER
-                </>
-              )}
-            </button>
-          )}
-        </div>
+        {/* <div className="h-16 flex items-end"> */}{" "}
+        {/* Container fixe pour éviter les sauts de layout */}
+        {hasChanged && (
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-primary text-white font-black py-4 rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center gap-2 active:scale-95 transition-all  zoom-in-95 animate-in slide-in-from-top duration-500"
+          >
+            {loading ? (
+              <FiLoader className="animate-spin" size={20} />
+            ) : (
+              <>
+                <FiCheck size={20} />
+                ENREGISTRER
+              </>
+            )}
+          </button>
+        )}
+        {/* </div> */}
       </form>
     </section>
   );
