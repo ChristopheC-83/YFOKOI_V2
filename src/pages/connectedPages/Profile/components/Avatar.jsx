@@ -16,11 +16,11 @@ export default function Avatar() {
 
   return (
     <div className="relative group">
-      <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-clip flex items-center justify-center text-white text-4xl md:text-5xl font-black shadow-xl shadow-primary/20 png-shadow">
+      <div className="size-22 md:size-30 rounded-full bg-clip flex items-center justify-center text-white text-4xl md:text-5xl font-black shadow-xl shadow-primary/20 png-shadow">
         {initial}
       </div>
       <div className="absolute -bottom-2 -right-2 bg-background p-2 rounded-full border-2 border-border">
-        <FiUser className="text-primary" />
+        <FiUser className="text-primary text-sm" />
       </div>
     </div>
   );

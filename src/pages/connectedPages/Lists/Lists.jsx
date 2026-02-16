@@ -18,7 +18,7 @@ export default function Lists() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleRefresh = async () => {
+  async function handleRefresh  () {
     // 1. On lance l'animation
     setIsRefreshing(true);
 
@@ -74,17 +74,17 @@ export default function Lists() {
       ) : listsLength === 0 ? (
         <NoListFrame onClick={() => setIsModalOpen(true)} />
       ) : (
-        <div className="w-full flex flex-col gap-3">
+        <div className="w-full flex flex-col justify-between gap-3">
           <CreateListButton
-            textButton={"Créer une nouvelle liste"}
+            textButton={"Nouvelle liste"}
             onClick={() => setIsModalOpen(true)}
           />
 
           {lists.map((list) => {
             const isOwner = list.owner_id === user?.id;
-            const shares = list.list_shares || []; // Petit "safety"
-
-            // Je suis invité et j'attends la validation
+            const shares = list.list_shares || []; 
+            
+            // 1. Je suis invité en attente
             const iAmWaiting =
               !isOwner &&
               shares.some(

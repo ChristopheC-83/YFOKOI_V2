@@ -8,9 +8,9 @@ export default function HeaderList({ listsLength, onRefresh, isRefreshing }) {
   const userName = user?.user_metadata?.name || "Toi";
 
   return (
-    <header className="flex items-center justify-between mb-6">
+    <header className="flex items-center justify-between mb-6 px-2">
       <div>
-        <h1 className="text-4xl md:text-5xl font-black text-clip uppercase tracking-tight flex flex-col ">
+        <h1 className="text-2xl md:text-3xl font-black text-clip uppercase tracking-tight flex flex-col ">
           <span>Salut,</span> {userName} !
         </h1>
 
@@ -37,7 +37,7 @@ export default function HeaderList({ listsLength, onRefresh, isRefreshing }) {
           </button>
         </div>
       </div>
-      <Avatar className="w-16 h-16 md:w-20 md:h-20 border-2 border-border" />
+      <Avatar className="size-14 md:size-16 border-2 border-border" />
     </header>
   );
 }

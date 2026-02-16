@@ -36,13 +36,13 @@ export function ModalJoinList({ refreshLists }) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <button className=" w-1/3 min-w-31.25 bg-secondary text-primary-foreground font-black  flex items-center justify-center rounded-2xl shadow-lg shadow-primary/20 active:scale-95 transition-all gap-2 cursor-pointer mb-2 text-md">
+        <button className=" w-1/2 min-w-31.25 bg-secondary text-primary-foreground font-black  flex items-center justify-center rounded-2xl shadow-lg shadow-primary/20 active:scale-95 transition-all gap-2 cursor-pointer mb-2 text-md uppercase ">
           <FiHash className="size-5 text-primary-foreground shrink-0 text-md " />
-          Rejoindre !
+          Rejoindre
         </button>
       </DialogTrigger>
 
-      <DialogContent className="rounded-[2rem] max-w-[90vw] sm:max-w-md">
+      <DialogContent className="rounded-[2rem] max-w-[90vw] sm:max-w-md top-[33%] ">
         <DialogHeader>
           <DialogTitle className="text-xl font-black uppercase italic">
             Rejoindre une liste
@@ -53,7 +53,6 @@ export function ModalJoinList({ refreshLists }) {
           <div className="relative">
             <input
               type="text"
-              
               value={code}
               onChange={(e) => setCode(e.target.value)}
               placeholder="Entrez le code (ex: 98293029)"
