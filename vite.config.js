@@ -27,12 +27,12 @@ export default defineConfig({
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "puzzles/*.png"],
       manifest: {
         name: "YFOKOI_V2",
-        short_name: "YFOKOI",
-        description: "YFOKOI",
-        theme_color: "#ffffff", // Le marron ambre de ton thème
-        background_color: "#33343a",
+        short_name: "YFOKOI2",
+        description: "YFOKOI_V2",
+        theme_color: "#ffffff", 
+        background_color: "#111111",
         display: "standalone",
-        orientation: "portrait", // On force le portrait au lancement
+        orientation: "portrait", 
         start_url: "/",
         scope: "/",
         icons: [
@@ -50,7 +50,7 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: "/index.html",
-        navigateFallbackDenylist: [/^\/pwa-.*\.png$/, /^\/favicon\.ico$/], 
+        navigateFallbackDenylist: [/^\/pwa-.*\.png$/, /^\/favicon\.ico$/],
         globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg,woff,woff2}"],
         cleanupOutdatedCaches: true,
       },

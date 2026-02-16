@@ -44,7 +44,7 @@ function InstallPWA() {
   if (!isDebug && (isInstalled || !deferredPrompt || !isVisible)) return null;
   if (isDebug && !isVisible) return null;
   // On ne rend rien si installé, pas de prompt, ou si l'utilisateur a fermé la modale
-//   if (isInstalled || !deferredPrompt || !isVisible) return null;
+  if (isInstalled || !deferredPrompt || !isVisible) return null;
 
   return (
     <div className="fixed inset-0 z-999 flex items-center justify-center p-6 animate-in fade-in duration-500">
