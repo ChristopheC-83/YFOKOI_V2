@@ -3,10 +3,10 @@ import { useUserStore } from "@/store/user/useUserStore";
 import { toast } from "sonner";
 import { AVAILABLE_ICONS } from "@/config/icons";
 import { createList } from "@/services/crud_list";
-import useListStore from "@/store/lists/useListStore";
+import useAppStore from "@/store/useAppStore";
 
 export default function CreateListModal({ isOpen, onClose }) {
-  const addListToStore = useListStore((state) => state.addList);
+  const addListToStore = useAppStore((state) => state.addList);
   const [title, setTitle] = useState("");
   const [selectedIcon, setSelectedIcon] = useState("FiList");
   const [loading, setLoading] = useState(false);

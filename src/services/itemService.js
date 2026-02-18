@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import useAppStore from "@/store/useAppStore";
 
 /**
  * Récupère les détails d'une seule liste par son ID
@@ -59,4 +60,54 @@ export async function deleteCheckedItems(listId) {
     .delete()
     .eq("list_id", listId)
     .eq("is_checked", true);
+}
+
+export async function syncAndStoreItems(listId, currentUserId) {
+  const store = useAppStore.getState();
+
+  // 1. Fetch des items bruts depuis Supabase
+  const { data: rawItems, error } = await supabase
+    .from("items")
+    .select("*")
+    .eq("list_id", listId)
+    .order("created_at", { ascending: true });
+
+  if (error) throw error;
+  if (!rawItems) return;
+
+  // 2. Identification des auteurs dont on n'a pas encore le nom (Links)
+  // On regarde dans store.links qui est déjà là
+  const missingIds = [...new Set(rawItems.map((i) => i.created_by))].filter(
+    (id) => id && id !== currentUserId && !store.links[id],
+  );
+
+  let updatedLinks = { ...store.links };
+
+  // 3. Récupération des noms manquants en une seule fois (Batch)
+  if (missingIds.length > 0) {
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("id, username")
+      .in("id", missingIds);
+
+    if (profiles) {
+      profiles.forEach((p) => {
+        updatedLinks[p.id] = p.username;
+      });
+      // On met à jour le store des pseudos
+      store.updateLinks(updatedLinks);
+    }
+  }
+
+  // 4. Décoration des items avec le authorName final
+  const enrichedItems = rawItems.map((item) => ({
+    ...item,
+    authorName:
+      item.created_by === currentUserId
+        ? null
+        : updatedLinks[item.created_by] || "...",
+  }));
+
+  // 5. Enregistrement final dans le Store (et donc en LS automatiquement)
+  store.setItems(listId, enrichedItems);
 }

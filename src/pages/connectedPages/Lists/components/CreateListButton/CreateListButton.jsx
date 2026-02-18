@@ -1,11 +1,11 @@
 import React from "react";
 import { FiPlus } from "react-icons/fi";
 import { ModalJoinList } from "../ModalJoinList/ModalJoinList";
-import useListStore from "@/store/lists/useListStore";
+import useAppStore from "@/store/useAppStore";
 
 export default function CreateListButton({ textButton, onClick }) {
 
-  const loadLists = useListStore((state) => state.loadLists);
+  const loadLists = useAppStore((state) => state.loadLists);
 
   return (
     <div className="flex justify-between gap-3">

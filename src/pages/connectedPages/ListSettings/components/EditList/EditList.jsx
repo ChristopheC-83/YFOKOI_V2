@@ -3,7 +3,7 @@ import { FiEdit3, FiCheck, FiLoader } from "react-icons/fi";
 import { updateList } from "@/services/crud_list";
 import { toast } from "sonner";
 import { AVAILABLE_ICONS } from "@/config/icons";
-import useListStore from "@/store/lists/useListStore";
+import useAppStore from "@/store/useAppStore";
 
 export default function EditList({ list }) {
   // États locaux pour gérer l'édition
@@ -12,7 +12,7 @@ export default function EditList({ list }) {
   const [loading, setLoading] = useState(false);
 
   // Accès à l'action du store pour mettre à jour l'UI globalement
-  const updateListInStore = useListStore((state) => state.updateListInStore);
+  const updateListInStore = useAppStore((state) => state.updateListInStore);
 
   // LOGIQUE : Bouton visible uniquement si changement réel
   const hasChanged = name !== list.title || selectedIcon !== list.icon;

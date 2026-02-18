@@ -6,13 +6,13 @@ import { useNavigate } from "react-router-dom";
 import HeaderList from "./components/HeaderList/HeaderList";
 import CreateListButton from "./components/CreateListButton/CreateListButton";
 import NoListFrame from "./components/NoListFrame/NoListFrame";
-import useListStore from "@/store/lists/useListStore";
 import { useUserStore } from "@/store/user/useUserStore";
 import NotificationBadge from "@/components/notificationBadge/NotificationBadge";
 import { toast } from "sonner";
+import useAppStore from "@/store/useAppStore";
 
 export default function Lists() {
-  const { lists = [], loadLists, loading } = useListStore();
+  const { lists = [], loadLists, loading } = useAppStore();
   const { user, isHydrated } = useUserStore(); // On récupère l'user et l'état du store
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);

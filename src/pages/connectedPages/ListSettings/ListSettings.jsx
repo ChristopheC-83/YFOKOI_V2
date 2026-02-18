@@ -7,10 +7,10 @@ import HeaderListSettings from "./components/HeaderListSettings/HeaderListSettin
 import EditList from "./components/EditList/EditList";
 import Sharing from "./components/Sharing/Sharing";
 import DeleteListButton from "./components/DeleteListButton/DeleteListButton";
-import useListStore from "@/store/lists/useListStore";
 import ManageAccess from "./components/ManageAccess/ManageAccess";
 import { X } from "lucide-react";
 import { useUserStore } from "@/store/user/useUserStore";
+import useAppStore from "@/store/useAppStore";
 
 export default function ListSettings() {
   const { id } = useParams();
@@ -18,8 +18,8 @@ export default function ListSettings() {
   const { user } = useUserStore();
 
   // On récupère la liste depuis le store
-  const list = useListStore((state) => state.getListById(id));
-  const { refreshList, removeListFromStore } = useListStore();
+  const list = useAppStore((state) => state.getListById(id));
+  const { refreshList, removeListFromStore } = useAppStore();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   // On initialise à TRUE pour bloquer l'affichage de "Liste introuvable" trop tôt
