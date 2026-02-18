@@ -16,7 +16,7 @@ export default function ListHeader({
   onRefresh,
 }) {
   const navigate = useNavigate();
-  console.log(hasNotification);
+  // console.log(hasNotification);
 
   return (
     <header className="flex items-center justify-between mb-4">

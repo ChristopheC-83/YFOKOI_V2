@@ -28,7 +28,7 @@ export async function fetchUserLists(userId) {
     .select(
       `
       *,
-      list_shares(status, invited_id)
+      list_shares(status, invited_id,role)
     `,
     ) // Modification : user_id -> invited_id
     .order("created_at", { ascending: false });

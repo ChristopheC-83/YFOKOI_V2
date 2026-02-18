@@ -9,10 +9,12 @@ export default function ItemsList({
   userRole,
   currentUserId,
   readOnly,
+  links
 }) {
   const activeItems = items.filter((item) => !item.is_checked);
   const completedItems = items.filter((item) => item.is_checked);
 
+  // console.log("links dans itemsList : ",links);
   // ÉTAT 1 : La liste est absolument vide (aucun item créé)
   if (items.length === 0) {
     return (
@@ -37,7 +39,8 @@ export default function ItemsList({
               onDelete={onDelete}
               readOnly={readOnly}
               userRole={userRole}
-              currentUserId={currentUserId} // <--- N'oublie pas de le passer ici !
+              currentUserId={currentUserId}
+              links={links}
             />
           ))
         ) : (
@@ -79,7 +82,8 @@ export default function ItemsList({
                 isCompleted
                 readOnly={readOnly}
                 userRole={userRole}
-                currentUserId={currentUserId} // <--- Et ici aussi !
+                currentUserId={currentUserId}
+                links={links}
               />
             ))}
           </div>

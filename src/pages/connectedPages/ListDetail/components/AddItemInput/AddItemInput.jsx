@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState,  useRef } from "react";
 import { FiPlus } from "react-icons/fi";
 import { addItem } from "@/services/itemService";
@@ -5,7 +6,7 @@ import { dictionaryService } from "@/services/dictionaryService";
 import { useUserStore } from "@/store/user/useUserStore";
 import { toast } from "sonner";
 
-export default function AddItemInput({ listId, onItemAdded }) {
+export default function AddItemInput({ listId }) {
   const [label, setLabel] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
@@ -26,7 +27,9 @@ export default function AddItemInput({ listId, onItemAdded }) {
     setSuggestions([]);
 
     // 3. On redonne le focus à l'input pour qu'elle puisse continuer à taper
-    inputRef.current?.focus();
+   setTimeout(() => {
+     inputRef.current?.focus();
+   }, 0);
   };
 
   async function handleSubmitFinal(text) {
@@ -35,21 +38,35 @@ export default function AddItemInput({ listId, onItemAdded }) {
 
     setIsAdding(true);
 
-    const { data, error } = await addItem({
-      listId,
-      label: cleanLabel,
-      userId: user.id,
-    });
+    try {
+      // Le service addItem s'occupe déjà d'envoyer à Supabase
+      // ET de mettre à jour le useAppStore.
+      const { data, error } = await addItem({
+        listId,
+        label: cleanLabel,
+        userId: user.id,
+      });
 
-    if (error) {
-      toast.error("Erreur d'ajout");
-    } else {
-      onItemAdded(data);
-      dictionaryService.add(cleanLabel);
-      setLabel("");
-      setSuggestions([]);
+      if (error) {
+        toast.error("Erreur d'ajout");
+      } else {
+        // SUCCÈS
+        dictionaryService.add(cleanLabel);
+        setLabel(""); // On vide l'input
+        setSuggestions([]);
+        toast.success(`${cleanLabel} ajouté !`);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Crash lors de l'ajout");
+    } finally {
+      // ON ARRÊTE L'ANIMATION QUOI QU'IL ARRIVE
+      setIsAdding(false);
+      // On redonne le focus pour l'article suivant
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
     }
-    setIsAdding(false);
   }
 
   return (

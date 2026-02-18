@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import useAppStore from "@/store/useAppStore";
 
 export default function Lists() {
-  const { lists = [], loadLists, loading } = useAppStore();
+  const { links,lists = [], loadLists, loading } = useAppStore();
   const { user, isHydrated } = useUserStore(); // On récupère l'user et l'état du store
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -83,6 +83,9 @@ export default function Lists() {
           {lists.map((list) => {
             const isOwner = list.owner_id === user?.id;
             const shares = list.list_shares || []; 
+            const ownerDisplayName = isOwner
+              ? null
+              : links[list.owner_id] || "Chargement...";
             
             // 1. Je suis invité en attente
             const iAmWaiting =
@@ -107,7 +110,7 @@ export default function Lists() {
                   }`}
                   onClick={() => !iAmWaiting && navigate(`/list/${list.id}`)}
                 >
-                  <ListCard list={list} />
+                  <ListCard list={list} ownerDisplayName ={ownerDisplayName}/>
                 </div>
 
                 {/* Badge Invité : En attente */}
