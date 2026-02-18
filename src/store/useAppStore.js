@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { fetchUserLists, fetchListById } from "@/services/crud_list";
 import { supabase } from "@/lib/supabase";
+import { fetchMissingProfiles } from "@/services/profileService";
 
 const useAppStore = create(
   persist(
@@ -13,20 +14,25 @@ const useAppStore = create(
       loading: false,
 
       // --- ACTIONS SUR LES LISTES (Tes fonctions recyclées) ---
+      // Dans ton useAppStore.js
       loadLists: async (silent = false) => {
         if (!silent) set({ loading: true });
         try {
           const {
             data: { user },
           } = await supabase.auth.getUser();
-          if (!user) throw new Error("Non authentifié");
+          const data = await fetchUserLists(user.id); // Ton fetch actuel
 
-          const data = await fetchUserLists(user.id);
           set({ lists: data, loading: false });
+
+          // --- LA MAGIE EST ICI ---
+          // On récupère tous les IDs de proprios des listes reçues
+          const allOwnerIds = data.map((l) => l.owner_id);
+          // On lance la récupération des noms (sans 'await' pour ne pas bloquer l'UI)
+          fetchMissingProfiles(allOwnerIds);
         } catch (error) {
-          console.error(error);
           set({ loading: false });
-          throw error;
+          console.error(error);
         }
       },
 
