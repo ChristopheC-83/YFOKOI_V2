@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-
+import { useShallow } from "zustand/react/shallow";
 // Stores
 import useAppStore from "@/store/useAppStore";
 import { useUserStore } from "@/store/user/useUserStore";
@@ -29,54 +29,44 @@ export default function ListDetail() {
   const { user } = useUserStore();
 
   // --- LE STORE EST NOTRE SOURCE DE VÉRITÉ ---
-  // 1. On sécurise l'accès aux items
-  const items = useAppStore((state) => {
-    // Si state.items n'est pas un objet (ex: null, undefined ou vieux tableau), on évite le crash
-    if (!state.items || Array.isArray(state.items)) return [];
-    return state.items[id] || [];
-  });
+  const items = useAppStore(
+    useShallow((state) => {
+      if (!state.items || Array.isArray(state.items)) return [];
+      return state.items[id] || [];
+    }),
+  );
 
-  // 2. On sécurise l'appel à la fonction getListById
-  const listInfo = useAppStore((state) => {
-    // On vérifie que la fonction existe avant de l'appeler
-    if (typeof state.getListById === "function") {
-      return state.getListById(id);
-    }
-    // Sinon on cherche à la main en secours pour éviter le crash
-    return state.lists?.find((l) => l.id === id) || null;
-  });
+  const listInfo = useAppStore(
+    useShallow((state) => state.lists.find((list) => list.id === id) || null),
+  );
   const links = useAppStore((state) => state.links);
   const [isInitialLoading, setIsInitialLoading] = useState(!listInfo);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   // --- CHARGEMENT & SYNCHRO ---
   useEffect(() => {
+    let isMounted = true;
+
     async function init() {
       if (!id) return;
-
-      // 1. On affiche ce qu'on a en cache (immédiat)
-      // listInfo est déjà récupéré via le store au début du composant
-
       try {
-        // 2. On lance la synchro DB -> Store en arrière-plan
-        // Cette fonction va fetcher la liste ET les items
         const { data: freshList } = await fetchListById(id);
-
-        if (freshList) {
-          // On met à jour la liste dans le store (ce qui rafraîchira les rôles)
+        if (isMounted && freshList) {
           useAppStore.getState().updateListInStore(id, freshList);
         }
-
         await syncAndStoreItems(id);
       } catch (err) {
-        console.error("Erreur de rafraîchissement des droits:", err);
+        console.error(err);
       } finally {
-        setIsInitialLoading(false);
+        if (isMounted) setIsInitialLoading(false);
       }
     }
 
     init();
-  }, [id]);
+    return () => {
+      isMounted = false;
+    };
+  }, [id]); 
 
   // --- LOGIQUE DES ROLES ---
   // On récupère le rôle via les shares stockées dans listInfo
@@ -93,7 +83,6 @@ export default function ListDetail() {
   const canEdit = ["owner", "modo", "edit"].includes(userRole);
   const hasPendingRequests =
     isOwner && listInfo?.list_shares?.some((s) => s.status === "pending");
-
 
   // --- ACTIONS (APPELENT LES SERVICES QUI METTENT À JOUR LE STORE) ---
   const handleToggle = async (item) => {
@@ -177,7 +166,7 @@ export default function ListDetail() {
         onClearCompleted={handleClearCompleted}
         userRole={userRole}
         currentUserId={user?.id}
-        links={links} // Pour afficher "par Vanessa"
+        links={links} 
         readOnly={userRole === "read"}
       />
     </main>
