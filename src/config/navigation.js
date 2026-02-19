@@ -1,8 +1,9 @@
-import { FiHome, FiLogIn, FiList, FiUser } from "react-icons/fi";
+import { FiHome, FiLogIn, FiList, FiUser, FiUserPlus } from "react-icons/fi";
 
 export const VISITORS_LINKS = [
   { label: "Accueil", path: "/", icon: FiHome },
   { label: "Connexion", path: "/login", icon: FiLogIn },
+  { label: "Inscription", path: "/register", icon: FiUserPlus },
 ];
 
 export const USERS_LINKS = [

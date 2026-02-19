@@ -9,11 +9,13 @@ export default function NameForm() {
   const updateUser = useUserStore((state) => state.updateUser);
   const user = useUserStore((state) => state.user);
   const isHydrated = useUserStore((state) => state.isHydrated);
+  console.log(user)
 
   const navigate = useNavigate();
 
   // On récupère le nom actuel (soit dans metadata, soit à la racine du store)
-  const currentName = user?.user_metadata?.name || user?.name || "";
+  const currentName =
+    user?.user_metadata?.name || user?.name || user?.display_name || "";
   const [name, setName] = useState(currentName);
   const [loading, setLoading] = useState(false);
 
