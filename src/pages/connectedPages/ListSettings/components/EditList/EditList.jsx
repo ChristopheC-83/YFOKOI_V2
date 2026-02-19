@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { FiEdit3, FiCheck, FiLoader } from "react-icons/fi";
 import { updateList } from "@/services/crud_list";
@@ -34,7 +35,6 @@ export default function EditList({ list }) {
 
     try {
       const { data, error } = await updateList(list.id, updates);
-      console.log("data", data);
 
       if (error) throw error;
 

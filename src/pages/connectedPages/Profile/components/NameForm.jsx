@@ -9,7 +9,7 @@ export default function NameForm() {
   const updateUser = useUserStore((state) => state.updateUser);
   const user = useUserStore((state) => state.user);
   const isHydrated = useUserStore((state) => state.isHydrated);
-  console.log(user)
+  // console.log(user)
 
   const navigate = useNavigate();
 

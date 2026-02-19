@@ -14,7 +14,7 @@ export default function NoListFrame({ onClick }) {
         oublier.
       </p>
       <CreateListButton
-        textButton={"CRÉER MA PREMIÈRE LISTE"}
+        textButton={"Première liste"}
         onClick={onClick}
       />
     </div>

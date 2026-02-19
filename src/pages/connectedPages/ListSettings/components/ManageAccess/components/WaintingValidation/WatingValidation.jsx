@@ -21,7 +21,7 @@ export default function WatingValidation({
         action === "accept"
           ? await acceptShareRequest(listId, invitedId)
           : await rejectShareRequest(listId, invitedId);
-      console.log("Action Result:", { action, listId, invitedId, error });
+      // console.log("Action Result:", { action, listId, invitedId, error });
 
       if (error) throw error;
 

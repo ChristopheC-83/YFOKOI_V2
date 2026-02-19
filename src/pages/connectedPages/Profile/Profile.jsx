@@ -13,6 +13,8 @@ import { ModeToggle } from "@/components/provider/ModeToggle";
 export default function Profile() {
   const { logout } = useUserStore();
   const navigate = useNavigate();
+  // const user = useUserStore((state) => state.user);
+  // console.log("user :", user);
 
   // --- States pour le Dico ---
   const [isModalOpen, setIsModalOpen] = useState(false);

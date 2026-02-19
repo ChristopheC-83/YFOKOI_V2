@@ -9,13 +9,12 @@ export default function ItemsList({
   userRole,
   currentUserId,
   readOnly,
-  links
+  // 🗑️ links supprimé ici
 }) {
   const activeItems = items.filter((item) => !item.is_checked);
   const completedItems = items.filter((item) => item.is_checked);
 
-  // console.log("links dans itemsList : ",links);
-  // ÉTAT 1 : La liste est absolument vide (aucun item créé)
+  // ÉTAT 1 : La liste est absolument vide
   if (items.length === 0) {
     return (
       <div className="text-center py-20 px-6 border-2 border-dashed border-border rounded-[2.5rem] opacity-50">
@@ -40,11 +39,11 @@ export default function ItemsList({
               readOnly={readOnly}
               userRole={userRole}
               currentUserId={currentUserId}
-              links={links}
+              // 🗑️ links supprimé ici
             />
           ))
         ) : (
-          // ÉTAT 2 : Tout a été coché
+          /* ÉTAT 2 : Tout a été coché */
           <div className="py-8 text-center bg-primary/5 rounded-[2rem] border border-primary/10">
             <p className="text-sm font-bold text-primary italic">
               Bravo, tout est dans le panier ! 🎉
@@ -83,7 +82,7 @@ export default function ItemsList({
                 readOnly={readOnly}
                 userRole={userRole}
                 currentUserId={currentUserId}
-                links={links}
+                // 🗑️ links supprimé ici
               />
             ))}
           </div>

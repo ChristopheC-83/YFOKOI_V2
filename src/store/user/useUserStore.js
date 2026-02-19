@@ -19,17 +19,18 @@ export const useUserStore = create(
           return;
         }
 
-        // On harmonise la donnée pour ne pas stocker tout le cambouis de Supabase
-        // On ne garde que ce qui nous sert pour l'UI et les requêtes
+        // On harmonise : on accepte soit le display_name à la racine (notre cleanUser)
+        // soit on fallback sur les metadata (pour le premier chargement/listener)
         const cleanedUser = {
           id: supabaseUser.id,
           email: supabaseUser.email,
-          // On va chercher le nom là où on l'a rangé (user_metadata)
-          display_name: supabaseUser.user_metadata?.display_name || "Utilisateur",
-          // On peut garder le reste au cas où (avatar, etc.)
-          metadata: supabaseUser.user_metadata 
+          // LA CORRECTION EST ICI :
+          // On privilégie la propriété display_name si elle existe déjà à la racine
+          display_name:
+            supabaseUser.user_metadata?.name ,
+          metadata: supabaseUser.user_metadata,
         };
-
+        console.log("cleanedUser", cleanedUser);
         set({ user: cleanedUser });
       },
 

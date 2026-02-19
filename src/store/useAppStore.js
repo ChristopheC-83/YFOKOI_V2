@@ -2,34 +2,28 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { fetchUserLists, fetchListById } from "@/services/crud_list";
 import { supabase } from "@/lib/supabase";
-import { fetchMissingProfiles } from "@/services/profileService";
 
 const useAppStore = create(
   persist(
     (set, get) => ({
       // --- DATA ---
       lists: [],
-      items: {}, // { listId: [item1, item2] }
-      links: {}, // { userId: username }
+      items: {}, // { listId: [item1, item2] } - Chaque item aura son .profiles.display_name
       loading: false,
 
-      // --- ACTIONS SUR LES LISTES (Tes fonctions recyclées) ---
-      // Dans ton useAppStore.js
+      // --- ACTIONS SUR LES LISTES ---
       loadLists: async (silent = false) => {
         if (!silent) set({ loading: true });
         try {
           const {
             data: { user },
           } = await supabase.auth.getUser();
-          const data = await fetchUserLists(user.id); // Ton fetch actuel
+
+          // IMPORTANT: Ici, assure-toi que fetchUserLists utilise aussi une jointure
+          // pour récupérer le nom du propriétaire si besoin.
+          const data = await fetchUserLists(user.id);
 
           set({ lists: data, loading: false });
-
-          // --- LA MAGIE EST ICI ---
-          // On récupère tous les IDs de proprios des listes reçues
-          const allOwnerIds = data.map((l) => l.owner_id);
-          // On lance la récupération des noms (sans 'await' pour ne pas bloquer l'UI)
-          fetchMissingProfiles(allOwnerIds);
         } catch (error) {
           set({ loading: false });
           console.error(error);
@@ -52,16 +46,13 @@ const useAppStore = create(
         }
       },
 
-      // --- ACTIONS SUR LES ITEMS & LINKS (Le nouveau moteur) ---
+      // --- ACTIONS SUR LES ITEMS ---
       setItems: (listId, data) =>
         set((state) => ({
           items: { ...state.items, [listId]: data },
         })),
 
-      updateLinks: (newLinks) =>
-        set((state) => ({
-          links: { ...state.links, ...newLinks },
-        })),
+      // updateLinks: (newLinks) => ... <--- POUBELLE !
 
       // --- HELPERS ---
       addList: (newList) =>
@@ -76,11 +67,10 @@ const useAppStore = create(
           ),
         })),
 
-      clearStore: () =>
-        set({ lists: [], items: {}, links: {}, loading: false }),
+      clearStore: () => set({ lists: [], items: {}, loading: false }), // On a viré links
     }),
     {
-      name: "yfokoi-app-storage", // La clé magique en LocalStorage
+      name: "yfokoi-app-storage",
     },
   ),
 );

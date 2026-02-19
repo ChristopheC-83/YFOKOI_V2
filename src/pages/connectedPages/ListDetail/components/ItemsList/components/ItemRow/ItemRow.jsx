@@ -9,26 +9,22 @@ export default function ItemRow({
   readOnly,
   userRole,
   currentUserId,
-  links,
+  // 🗑️ links supprimé ici
 }) {
-  // --- LOGIQUE DE DROITS CHIRURGICALE ---
+  // --- LOGIQUE DE DROITS ---
   const isOwner = userRole === "owner";
   const isModo = userRole === "modo";
-
-  // console.log(" links dans itemRow : ", links);
-
-  // ATTENTION : On utilise created_by (le nom officiel en DB)
   const isCreator = item.created_by === currentUserId;
 
   // L'éditeur ne peut toucher qu'à ses propres créations
   const canTouch = isOwner || isModo || (userRole === "edit" && isCreator);
-
-  // Un item est bloqué s'il est en lecture seule OU si l'utilisateur n'a pas les droits dessus
   const isDisabled = readOnly || !canTouch;
 
   // --- LOGIQUE D'AFFICHAGE DU NOM ---
-  // On affiche le nom de l'auteur si ce n'est pas moi (et qu'on a l'info)
-  const authorName = isCreator ? null : links[item.created_by] || "...";
+  // On récupère le nom depuis l'objet profile injecté par notre jointure SQL
+  const authorName = isCreator
+    ? null
+    : item.profiles?.display_name || "Quelqu'un";
 
   return (
     <div
@@ -61,7 +57,7 @@ export default function ItemRow({
               {item.label}
             </span>
 
-            {/* AFFICHAGE DU NOM (Discret) */}
+            {/* AFFICHAGE DU NOM (Dynamique et frais) */}
             {authorName && (
               <span className="text-[10px] text-muted-foreground/40 italic font-light shrink-0">
                 de {authorName}
@@ -78,7 +74,7 @@ export default function ItemRow({
         </div>
       </div>
 
-      {/* Suppression : uniquement si on a le droit de modifier CET item */}
+      {/* Suppression */}
       {!isDisabled && (
         <button
           onClick={(e) => {

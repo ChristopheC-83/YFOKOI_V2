@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useShallow } from "zustand/react/shallow";
+
 // Stores
 import useAppStore from "@/store/useAppStore";
 import { useUserStore } from "@/store/user/useUserStore";
@@ -16,12 +17,12 @@ import {
   syncAndStoreItems,
 } from "@/services/itemService";
 import { leaveList } from "@/services/shareService";
+import { fetchListById } from "@/services/crud_list";
 
 // Composants
 import ItemsList from "./components/ItemsList/ItemsList";
 import AddItemInput from "./components/AddItemInput/AddItemInput";
 import ListHeader from "./components/ListHeader/ListHeader";
-import { fetchListById } from "@/services/crud_list";
 
 export default function ListDetail() {
   const { id } = useParams();
@@ -29,17 +30,12 @@ export default function ListDetail() {
   const { user } = useUserStore();
 
   // --- LE STORE EST NOTRE SOURCE DE VÉRITÉ ---
-  const items = useAppStore(
-    useShallow((state) => {
-      if (!state.items || Array.isArray(state.items)) return [];
-      return state.items[id] || [];
-    }),
-  );
+  const items = useAppStore(useShallow((state) => state.items?.[id] || []));
 
   const listInfo = useAppStore(
     useShallow((state) => state.lists.find((list) => list.id === id) || null),
   );
-  const links = useAppStore((state) => state.links);
+
   const [isInitialLoading, setIsInitialLoading] = useState(!listInfo);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -50,13 +46,15 @@ export default function ListDetail() {
     async function init() {
       if (!id) return;
       try {
+        // On récupère les infos de la liste (pour le titre, icône, partages)
         const { data: freshList } = await fetchListById(id);
         if (isMounted && freshList) {
           useAppStore.getState().updateListInStore(id, freshList);
         }
+        // On récupère les items (avec les noms de profils intégrés)
         await syncAndStoreItems(id);
       } catch (err) {
-        console.error(err);
+        console.error("Erreur d'initialisation :", err);
       } finally {
         if (isMounted) setIsInitialLoading(false);
       }
@@ -66,14 +64,14 @@ export default function ListDetail() {
     return () => {
       isMounted = false;
     };
-  }, [id]); 
+  }, [id]);
 
   // --- LOGIQUE DES ROLES ---
-  // On récupère le rôle via les shares stockées dans listInfo
   const isOwner = listInfo?.owner_id === user?.id;
   const userMemberInfo = listInfo?.list_shares?.find(
     (s) => s.invited_id === user?.id,
   );
+
   const userRole = isOwner
     ? "owner"
     : userMemberInfo?.status === "accepted"
@@ -84,7 +82,7 @@ export default function ListDetail() {
   const hasPendingRequests =
     isOwner && listInfo?.list_shares?.some((s) => s.status === "pending");
 
-  // --- ACTIONS (APPELENT LES SERVICES QUI METTENT À JOUR LE STORE) ---
+  // --- ACTIONS ---
   const handleToggle = async (item) => {
     try {
       await toggleItemStatus(item);
@@ -126,12 +124,6 @@ export default function ListDetail() {
     toast.success("À jour");
   };
 
-  // console.log("Ma recherche de membre :", {
-  //   monId: user?.id,
-  //   lesShares: listInfo?.list_shares,
-  //   trouvé: userMemberInfo,
-  // });
-
   // --- RENDU ---
   if (isInitialLoading) {
     return (
@@ -141,7 +133,6 @@ export default function ListDetail() {
     );
   }
 
-  // Si après le chargement on n'a toujours pas de listInfo
   if (!listInfo) return null;
 
   return (
@@ -160,13 +151,12 @@ export default function ListDetail() {
       {canEdit && <AddItemInput listId={id} />}
 
       <ItemsList
-        items={items} // Vient directement du store, réactif 100%
+        items={items}
         onToggle={handleToggle}
         onDelete={handleDeleteItem}
         onClearCompleted={handleClearCompleted}
         userRole={userRole}
         currentUserId={user?.id}
-        links={links} 
         readOnly={userRole === "read"}
       />
     </main>
