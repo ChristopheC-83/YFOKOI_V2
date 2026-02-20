@@ -56,10 +56,16 @@ export default function ListDetail() {
         "postgres_changes",
         { event: "*", schema: "public", table: "items" },
         (payload) => {
-          // Optionnel : on vérifie que l'item appartient bien à notre liste
-          const listIdInPayload = payload.new?.list_id || payload.old?.list_id;
-          if (listIdInPayload === id) {
-            console.log("🔄 Update Item : Refreshing...");
+          // Pour un DELETE, payload.new est null.
+          // Pour un INSERT/UPDATE, on peut vérifier la liste.
+          const isRelevant =
+            payload.eventType === "DELETE" ||
+            (payload.new && payload.new.list_id === id);
+
+          if (isRelevant) {
+            console.log(
+              `🔄 Realtime ${payload.eventType} : Refreshing items...`,
+            );
             refreshListAndItems(id);
           }
         },
