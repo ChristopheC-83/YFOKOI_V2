@@ -41,105 +41,50 @@ export default function ListDetail() {
   const [isInitialLoading, setIsInitialLoading] = useState(!listInfo);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // --- CHARGEMENT & SYNCHRO ---
-  // useEffect(() => {
-  //   let isMounted = true;
-
-  //   async function init() {
-  //     if (!id) return;
-  //     try {
-  //       const { data: freshList, error } = await fetchListById(id);
-
-  //       // CAS CRITIQUE : La liste n'existe plus (supprimée par le proprio)
-  //       // fetchListById renvoie souvent data: null sans forcément lever une exception
-  //       if (isMounted && (!freshList || error)) {
-  //         toast.error("Cette liste n'existe plus ou vous n'y avez plus accès.");
-  //         useAppStore.getState().removeListFromStore(id); // On nettoie le store local
-  //         navigate("/lists", { replace: true }); // On dégage l'invité
-  //         return;
-  //       }
-
-  //       if (isMounted && freshList) {
-  //         useAppStore.getState().updateListInStore(id, freshList);
-  //       }
-
-  //       await syncAndStoreItems(id);
-  //     } catch (err) {
-  //       console.error("Erreur d'initialisation :", err);
-  //     } finally {
-  //       if (isMounted) setIsInitialLoading(false);
-  //     }
-  //   }
-
-  //   init();
-  //   return () => {
-  //     isMounted = false;
-  //   };
-  // }, [id, navigate]); // Ajoute navigate aux dépendances
-
+  //  chargement et synchronisation des données
   useEffect(() => {
     if (!id) return;
 
-    // On rafraîchit à l'ouverture, c'est la sécurité.
+    // 1. On charge la vérité au montage du composant
     refreshListAndItems(id);
 
-    // On ouvre UNE SEULE antenne pour TOUT ce qui touche aux items
+    // 2. On ouvre un canal unique pour surveiller TOUT ce qui touche à cette vue
     const channel = supabase
-      .channel(`ma-liste-${id}`)
+      .channel(`list-view-sync-${id}`)
+      // On écoute la table ITEMS
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "items" },
         (payload) => {
-          // Dès qu'UN item bouge (n'importe lequel), on rafraîchit tout.
-          // C'est simple, c'est brutal, ça marche.
-          console.log("Mouvement détecté !");
-          refreshListAndItems(id);
+          // Optionnel : on vérifie que l'item appartient bien à notre liste
+          const listIdInPayload = payload.new?.list_id || payload.old?.list_id;
+          if (listIdInPayload === id) {
+            console.log("🔄 Update Item : Refreshing...");
+            refreshListAndItems(id);
+          }
+        },
+      )
+      // On écoute la table LISTS (pour la suppression)
+      .on(
+        "postgres_changes",
+        {
+          event: "DELETE",
+          schema: "public",
+          table: "lists",
+          filter: `id=eq.${id}`,
+        },
+        () => {
+          console.log("🚨 Liste supprimée : Navigation...");
+          navigate("/lists", { replace: true });
         },
       )
       .subscribe();
 
+    // 3. On ferme proprement en partant
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [id]); // On garde les dépendances au strict minimum//   if (!id) return;
-
-  //   // 1. Refresh initial (La base)
-  //   refreshListAndItems(id);
-
-  //   // 2. Création d'un canal UNIQUE pour cette page
-  //   const channel = supabase
-  //     .channel(`global-sync-${id}`)
-  //     .on(
-  //       "postgres_changes",
-  //       { event: "*", schema: "public", table: "items" }, // On écoute TOUT sans filtre pour tester
-  //       (payload) => {
-  //         console.log("🔔 REALTIME ITEM :", payload.eventType);
-  //         refreshListAndItems(id);
-  //       },
-  //     )
-  //     .on(
-  //       "postgres_changes",
-  //       {
-  //         event: "DELETE",
-  //         schema: "public",
-  //         table: "lists",
-  //         filter: `id=eq.${id}`,
-  //       },
-  //       () => {
-  //         console.log("🚨 REALTIME DELETE LISTE");
-  //         navigate("/lists", { replace: true });
-  //       },
-  //     )
-  //     .subscribe((status) => {
-  //       console.log("📡 STATUS CONNEXION :", status);
-  //     });
-
-  //   // 3. NETTOYAGE (Crucial pour éviter le blocage)
-  //   return () => {
-  //     console.log("🔌 Déconnexion du canal");
-  //     supabase.removeChannel(channel);
-  //   };
-  // }, [id, navigate]);
+  }, [id, navigate]);
 
   // --- LOGIQUE DES ROLES ---
   const isOwner = listInfo?.owner_id === user?.id;
