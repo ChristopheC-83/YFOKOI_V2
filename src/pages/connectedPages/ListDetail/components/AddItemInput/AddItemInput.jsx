@@ -32,15 +32,57 @@ export default function AddItemInput({ listId }) {
    }, 0);
   };
 
+  // async function handleSubmitFinal(text) {
+  //   const cleanLabel = text.trim();
+  //   if (!cleanLabel || isAdding) return;
+
+  //   setIsAdding(true);
+
+  //   try {
+  //     // Le service addItem s'occupe déjà d'envoyer à Supabase
+  //     // ET de mettre à jour le useAppStore.
+  //     const { data, error } = await addItem({
+  //       listId,
+  //       label: cleanLabel,
+  //       userId: user.id,
+  //     });
+
+  //     if (error) {
+  //       toast.error("Erreur d'ajout");
+  //     } else {
+  //       // SUCCÈS
+  //       dictionaryService.add(cleanLabel);
+  //       setLabel(""); // On vide l'input
+  //       setSuggestions([]);
+  //       toast.success(`${cleanLabel} ajouté !`);
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //     toast.error("Crash lors de l'ajout");
+  //   } finally {
+  //     // ON ARRÊTE L'ANIMATION QUOI QU'IL ARRIVE
+  //     setIsAdding(false);
+  //     // On redonne le focus pour l'article suivant
+  //     setTimeout(() => {
+  //       inputRef.current?.focus();
+  //     }, 0);
+  //   }
+  // }
+
   async function handleSubmitFinal(text) {
     const cleanLabel = text.trim();
     if (!cleanLabel || isAdding) return;
 
-    setIsAdding(true);
+    // 1. SAUVEGARDE (au cas où ça foire)
+    const previousLabel = cleanLabel;
+
+    // 2. OPTIMISME : On vide tout de suite pour donner l'impression de vitesse
+    setLabel("");
+    setSuggestions([]);
+    setIsAdding(true); // On garde le lock pour éviter le spam
 
     try {
-      // Le service addItem s'occupe déjà d'envoyer à Supabase
-      // ET de mettre à jour le useAppStore.
+      // On lance l'appel
       const { data, error } = await addItem({
         listId,
         label: cleanLabel,
@@ -48,24 +90,21 @@ export default function AddItemInput({ listId }) {
       });
 
       if (error) {
-        toast.error("Erreur d'ajout");
+        // 3. ROLLBACK : En cas d'erreur, on remet le texte pour qu'il puisse corriger
+        setLabel(previousLabel);
+        toast.error("Impossible d'ajouter l'article");
       } else {
-        // SUCCÈS
         dictionaryService.add(cleanLabel);
-        setLabel(""); // On vide l'input
-        setSuggestions([]);
-        toast.success(`${cleanLabel} ajouté !`);
+        // Pas besoin de toast.success ici si l'item est déjà apparu,
+        // c'est plus fluide sans interruption.
       }
     } catch (err) {
+      setLabel(previousLabel);
       console.error(err);
-      toast.error("Crash lors de l'ajout");
+      toast.error("Erreur réseau");
     } finally {
-      // ON ARRÊTE L'ANIMATION QUOI QU'IL ARRIVE
       setIsAdding(false);
-      // On redonne le focus pour l'article suivant
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 0);
+      inputRef.current?.focus();
     }
   }
 
