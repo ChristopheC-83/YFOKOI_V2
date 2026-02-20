@@ -15,6 +15,7 @@ import {
   deleteItem,
   deleteCheckedItems,
   syncAndStoreItems,
+  refreshListAndItems,
 } from "@/services/itemService";
 import { leaveList } from "@/services/shareService";
 import { fetchListById } from "@/services/crud_list";
@@ -46,12 +47,21 @@ export default function ListDetail() {
     async function init() {
       if (!id) return;
       try {
-        // On récupère les infos de la liste (pour le titre, icône, partages)
-        const { data: freshList } = await fetchListById(id);
+        const { data: freshList, error } = await fetchListById(id);
+
+        // CAS CRITIQUE : La liste n'existe plus (supprimée par le proprio)
+        // fetchListById renvoie souvent data: null sans forcément lever une exception
+        if (isMounted && (!freshList || error)) {
+          toast.error("Cette liste n'existe plus ou vous n'y avez plus accès.");
+          useAppStore.getState().removeListFromStore(id); // On nettoie le store local
+          navigate("/lists", { replace: true }); // On dégage l'invité
+          return;
+        }
+
         if (isMounted && freshList) {
           useAppStore.getState().updateListInStore(id, freshList);
         }
-        // On récupère les items (avec les noms de profils intégrés)
+
         await syncAndStoreItems(id);
       } catch (err) {
         console.error("Erreur d'initialisation :", err);
@@ -64,7 +74,7 @@ export default function ListDetail() {
     return () => {
       isMounted = false;
     };
-  }, [id]);
+  }, [id, navigate]); // Ajoute navigate aux dépendances
 
   // --- LOGIQUE DES ROLES ---
   const isOwner = listInfo?.owner_id === user?.id;
@@ -118,12 +128,24 @@ export default function ListDetail() {
     }
   };
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await syncAndStoreItems(id);
-    setIsRefreshing(false);
-    toast.success("À jour");
-  };
+ const handleRefresh = async () => {
+   setIsRefreshing(true);
+   try {
+     const result = await refreshListAndItems(id);
+
+     if (result?.deleted) {
+       toast.error("La liste n'existe plus");
+       navigate("/lists");
+       return;
+     }
+
+     toast.success("À jour");
+   } catch (err) {
+     toast.error("Erreur de synchronisation");
+   } finally {
+     setIsRefreshing(false);
+   }
+ };
 
   // --- RENDU ---
   if (isInitialLoading) {

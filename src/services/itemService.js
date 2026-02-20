@@ -131,7 +131,7 @@ export async function syncAndStoreItems(listId) {
     .from("items")
     .select(`*,profiles (display_name)`)
     .eq("list_id", listId)
-    .order("created_at", { ascending: true });
+    .order("label", { ascending: true });
 
   if (error) throw error;
   if (!rawItems) return;
@@ -142,26 +142,49 @@ export async function syncAndStoreItems(listId) {
 /**
  * REFRESH GLOBAL (Liste + Items)
  */
+// Dans services/itemService.js
+
+// Dans itemService.js
+
 export async function refreshListAndItems(id) {
   const store = useAppStore.getState();
 
   try {
-    const [listRes, itemsRes] = await Promise.all([
-      fetchListById(id),
-      supabase
-        .from("items")
-        .select(`*,profiles (display_name)`)
-        .eq("list_id", id)
-        .order("created_at", { ascending: true }),
-    ]);
+    const listRes = await fetchListById(id);
+    
+    // On simplifie au maximum la syntaxe de jointure
+    const itemsRes = await supabase
+      .from("items")
+      .select(`
+        *,
+        profiles (
+          display_name
+        )
+      `)
+      .eq("list_id", id)
+      .order("label", { ascending: true });
 
-    if (listRes.data) {
-      store.updateListInStore(id, listRes.data);
+    if (itemsRes.error) {
+      console.error("ERREUR SQL ITEMS:", itemsRes.error.message);
+      // Si la jointure profiles pose encore problème, 
+      // on tente sans pour ne pas bloquer l'app
     }
+
+    if (!listRes.data) {
+      store.removeListFromStore(id);
+      return { deleted: true };
+    }
+
+    store.updateListInStore(id, listRes.data);
+
     if (itemsRes.data) {
-      store.setItems(id, itemsRes.data);
+      // On force la nouvelle référence pour Zustand
+      store.setItems(id, [...itemsRes.data]);
     }
+    
+    return { deleted: false };
   } catch (err) {
-    console.error("Erreur lors du refresh global:", err);
+    console.error("Crash refresh:", err);
+    throw err;
   }
 }
