@@ -15,9 +15,10 @@ export default function NameForm() {
 
   // On récupère le nom actuel (soit dans metadata, soit à la racine du store)
   const currentName =
-    user?.user_metadata?.name || user?.name || user?.display_name || "";
+    user?.metadata?.name ;
   const [name, setName] = useState(currentName);
   const [loading, setLoading] = useState(false);
+  console.log("user : ", user);
 
   async function handleUpdateProfile(e) {
     e.preventDefault();
