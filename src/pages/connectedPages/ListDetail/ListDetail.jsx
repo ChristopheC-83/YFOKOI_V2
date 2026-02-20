@@ -94,6 +94,7 @@ export default function ListDetail() {
   const handleDeleteItem = async (itemId) => {
     try {
       await deleteItem(itemId, id);
+      toast.success("Suppression effectuée");
     } catch (err) {
       toast.error("Erreur lors de la suppression");
     }

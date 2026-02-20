@@ -30,7 +30,7 @@ export const useUserStore = create(
             supabaseUser.user_metadata?.name ,
           metadata: supabaseUser.user_metadata,
         };
-        console.log("cleanedUser", cleanedUser);
+        // console.log("cleanedUser", cleanedUser);
         set({ user: cleanedUser });
       },
 

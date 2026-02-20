@@ -55,6 +55,9 @@ export function Login() {
           <p className="text-muted-foreground font-medium text-sm italic">
             L'app qui n'oublie rien.
           </p>
+          <p className="text-muted-foreground font-medium text-sm italic">
+            Pour que tu puisses tout oublier !
+          </p>
         </div>
 
         <div className="bg-card text-card-foreground p-8 rounded-3xl shadow-2xl border border-border/70">

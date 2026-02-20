@@ -7,6 +7,7 @@ import { fetchListById } from "./crud_list";
  * On insère et on récupère immédiatement le display_name pour le store.
  */
 export async function addItem({ listId, label, userId, category = "divers" }) {
+  // 1. On insère l'item et on demande juste les données de l'item (sans jointure)
   const { data, error } = await supabase
     .from("items")
     .insert([
@@ -18,14 +19,33 @@ export async function addItem({ listId, label, userId, category = "divers" }) {
         is_checked: false,
       },
     ])
-    .select(`*, profiles:created_by(display_name)`)
+    .select() // On reste simple ici pour éviter l'erreur 400
     .single();
 
-  if (data && !error) {
+  if (error) {
+    console.error("Erreur technique :", error.message);
+    return { data: null, error };
+  }
+
+  if (data) {
+    // 2. MAGIE : On récupère le nom de l'utilisateur depuis ton UserStore
+    // (puisqu'on sait que c'est l'utilisateur actuel qui vient de créer l'item !)
+    const { useUserStore } = await import("@/store/user/useUserStore");
+    const currentUser = useUserStore.getState().user;
+
+    // 3. On "bricole" l'objet enrichi pour le store local
+    const enrichedItem = {
+      ...data,
+      profiles: {
+        display_name: currentUser?.display_name || "Moi",
+      },
+    };
+
     const store = useAppStore.getState();
     const current = store.items[listId] || [];
-    store.setItems(listId, [...current, data]);
+    store.setItems(listId, [...current, enrichedItem]);
   }
+
   return { data, error };
 }
 
@@ -36,20 +56,34 @@ export async function addItem({ listId, label, userId, category = "divers" }) {
 export async function toggleItemStatus(item) {
   const newStatus = !item.is_checked;
 
+  // 1. Mise à jour en base (on reste basique sur le .select)
   const { data, error } = await supabase
     .from("items")
     .update({ is_checked: newStatus })
     .eq("id", item.id)
-    .select(`*, profiles:created_by(display_name)`)
+    .select() // Pas de jointure ici pour éviter l'erreur 400
     .single();
 
-  if (data && !error) {
+  if (error) {
+    console.error("Erreur toggle :", error.message);
+    return { data: null, error };
+  }
+
+  if (data) {
     const store = useAppStore.getState();
-    const updatedItems = store.items[item.list_id].map((i) =>
-      i.id === item.id ? data : i,
+    const currentItems = store.items[item.list_id] || [];
+
+    // 2. MAGIE : On fusionne la réponse de la DB avec ce qu'on a déjà
+    // On garde l'ancien 'item.profiles' pour ne pas perdre le nom à l'écran
+    const updatedItems = currentItems.map((i) =>
+      i.id === item.id
+        ? { ...i, ...data } // On écrase avec les nouvelles données (is_checked), mais 'profiles' reste là
+        : i,
     );
+
     store.setItems(item.list_id, updatedItems);
   }
+
   return { data, error };
 }
 
