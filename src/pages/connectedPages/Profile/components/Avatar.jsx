@@ -11,7 +11,7 @@ export default function Avatar() {
     return <div className="w-24 h-24 rounded-full bg-muted animate-pulse" />;
 
   // Sécurité 2 : On cherche le nom partout (metadata ou racine)
-  const name = user?.display_name || "";
+  const name = user?.metadata?.name || user?.display_name || "";
   const initial = name ? name.charAt(0).toUpperCase() : "?";
 
   return (

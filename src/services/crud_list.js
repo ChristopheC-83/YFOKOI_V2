@@ -28,14 +28,15 @@ export async function fetchUserLists(userId) {
     .select(
       `
       *,
-      list_shares(status, invited_id,role)
+      profiles:owner_id (display_name), 
+      list_shares (status, invited_id, role)
     `,
-    ) // Modification : user_id -> invited_id
+    )
     .order("created_at", { ascending: false });
 
   if (error) throw error;
 
-  // Filtrage local (invited_id mis à jour ici aussi)
+  // Filtrage local (toujours nécessaire si tu ne veux pas filtrer en SQL)
   return data.filter(
     (list) =>
       list.owner_id === userId ||

@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { useUserStore } from "@/store/user/useUserStore";
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import { FiCheck, FiMail } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -9,17 +9,15 @@ export default function NameForm() {
   const updateUser = useUserStore((state) => state.updateUser);
   const user = useUserStore((state) => state.user);
   const isHydrated = useUserStore((state) => state.isHydrated);
-  // console.log(user)
+  // console.log("user : " , user)
 
   const navigate = useNavigate();
 
-  // On récupère le nom actuel (soit dans metadata, soit à la racine du store)
-  const currentName =
-    user?.metadata?.name ;
+  const currentName = user?.metadata?.name || user?.display_name;
   const [name, setName] = useState(currentName);
   const [loading, setLoading] = useState(false);
-  console.log("user : ", user);
 
+  
   async function handleUpdateProfile(e) {
     e.preventDefault();
     if (!name.trim()) return toast.error("Le nom est obligatoire");
@@ -47,9 +45,15 @@ export default function NameForm() {
       </h1>
     );
 
-  // if (isHydrated && name === "" && currentName !== "") {
-  //   setName(currentName);
-  // }
+ 
+
+  if (!isHydrated && !name)
+    return (
+      <h1 className="text-2xl font-black text-center mb-6 text-clip">
+        Ton nom ? j'essaye de m'en souvenir... Attends !
+      </h1>
+    );
+  
 
   return (
     <form onSubmit={handleUpdateProfile} className="space-y-6">
@@ -66,7 +70,7 @@ export default function NameForm() {
             placeholder="Ton petit nom..."
             className="w-full bg-input border-2 border-transparent focus:border-primary/50 py-4 px-5 rounded-2xl outline-none transition-all font-medium text-lg mt-4"
           />
-          {name.length > 2 && (
+          {name?.length > 2 && (
             <FiCheck className="absolute right-4 top-1/2  text-green-500 animate-in zoom-in" />
           )}
         </div>
@@ -86,7 +90,7 @@ export default function NameForm() {
       <button
         type="submit"
         disabled={loading || !name}
-        className={`w-full bg-primary text-primary-foreground font-black py-4 rounded-2xl shadow-lg shadow-primary/20 hover:brightness-110 active:scale-[0.97] transition-all disabled:opacity-50 disabled:grayscale cursor-pointer ${name.length > 2 ? "opacity-100 " : "opacity-30 disabled:grayscale pointer-events-none"}`}
+        className={`w-full bg-primary text-primary-foreground font-black py-4 rounded-2xl shadow-lg shadow-primary/20 hover:brightness-110 active:scale-[0.97] transition-all disabled:opacity-50 disabled:grayscale cursor-pointer ${name?.length > 2 ? "opacity-100 " : "opacity-30 disabled:grayscale pointer-events-none"}`}
       >
         {loading ? "ENREGISTREMENT..." : "VALIDER MON PROFIL"}
       </button>

@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import useAppStore from "@/store/useAppStore";
 
 export default function Lists() {
-  const { links,lists = [], loadLists, loading } = useAppStore();
+  const { lists = [], loadLists, loading } = useAppStore();
   const { user, isHydrated } = useUserStore(); // On récupère l'user et l'état du store
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -82,11 +82,15 @@ export default function Lists() {
 
           {lists.map((list) => {
             const isOwner = list.owner_id === user?.id;
-            const shares = list.list_shares || []; 
+            const shares = list.list_shares || [];
+
+            // 🛡️ NOUVEAU SYSTÈME : On va chercher le nom dans la jointure Supabase
+            // On teste .profiles (nom standard) ou .owner (selon ta requête SQL)
+            const ownerData = list.profiles || list.owner;
             const ownerDisplayName = isOwner
               ? null
-              : links[list.owner_id] || "Chargement...";
-            
+              : ownerData?.display_name || "Auteur inconnu";
+
             // 1. Je suis invité en attente
             const iAmWaiting =
               !isOwner &&
@@ -110,7 +114,7 @@ export default function Lists() {
                   }`}
                   onClick={() => !iAmWaiting && navigate(`/list/${list.id}`)}
                 >
-                  <ListCard list={list} ownerDisplayName ={ownerDisplayName}/>
+                  <ListCard list={list} ownerDisplayName={ownerDisplayName} />
                 </div>
 
                 {/* Badge Invité : En attente */}

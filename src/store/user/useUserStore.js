@@ -14,7 +14,7 @@ export const useUserStore = create(
        * Met à jour l'utilisateur (utilisé par le listener Supabase)
        */
       setUser: (supabaseUser) => {
-        console.log("supabaseUser", supabaseUser);
+        // console.log("supabaseUser", supabaseUser);
         if (!supabaseUser) {
           set({ user: null });
           return;
@@ -28,7 +28,7 @@ export const useUserStore = create(
           // LA CORRECTION EST ICI :
           // On privilégie la propriété display_name si elle existe déjà à la racine
           display_name:
-            supabaseUser.user_metadata?.name  ,
+            supabaseUser.user_metadata?.display_name ,
           metadata: supabaseUser.user_metadata,
         };
         // console.log("cleanedUser", cleanedUser);

@@ -5,7 +5,7 @@ import { FiRefreshCw } from "react-icons/fi"; // L'icône standard
 
 export default function HeaderList({ listsLength, onRefresh, isRefreshing }) {
   const user = useUserStore((state) => state.user);
-  const userName = user?.display_name || "Toi";
+  const userName = user?.metadata?.name || user?.display_name || "Toi";
 
   return (
     <header className="flex items-center justify-between mb-6 px-2">

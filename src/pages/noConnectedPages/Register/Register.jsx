@@ -50,13 +50,13 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start pt-[3vh] p-6 bg-background text-foreground animate-in slide-in-from-right duration-500">
-      <div className="w-full max-w-sm space-y-8">
+      <div className="w-full max-w-md space-y-8">
         {/* Header Identité */}
-        <div className="text-center space-y-2">
-          <h1 className="text-5xl font-black tracking-tighter inline-block mb-2 underline-clip">
+        <div className=" flex flex-col items-center justify-center w-full">
+          <h1 className="w-fit text-5xl font-black tracking-tighter inline-block mb-2 underline-clip">
             YFOKOI
           </h1>
-          <h2 className="text-4xl font-black tracking-tighter inline-block mb-6 underline-clip">
+          <h2 className="w-fit text-4xl font-black tracking-tighter inline-block mb-6 underline-clip">
             REJOINDRE
           </h2>
           <p className="text-muted-foreground font-medium text-sm">

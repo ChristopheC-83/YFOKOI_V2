@@ -9,14 +9,15 @@ export default function ConnectedRoute({ children }) {
 
   if (!isHydrated) return <Loader />;
 
-  console.log("userRoute", user);
+  // console.log("userRoute", user);
   // 1. Pas connecté ? Dehors.
   if (!user) return <Navigate to="/login" replace />;
-  console.log("user22", user)
+  // console.log("user22", user)
 
   // 2. Connecté mais pas de NOM ?
   // On vérifie s'il n'est pas déjà sur la page profil pour éviter une boucle infinie
-  const name = user?.metadata?.display_name;
+  const name = user?.metadata?.name || user?.display_name;
+  // console.log(name)
 
   if (!name && location.pathname !== "/profile") {
     return <Navigate to="/profile" replace />;
