@@ -46,7 +46,7 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background text-foreground">
+    <div className="min-h-screen flex flex-col items-center justify-start pt-[15vh] p-6 bg-background text-foreground animate-in slide-in-from-right duration-500">
       <div className="w-full max-w-sm space-y-10">
         <div className="text-center space-y-2">
           <h1 className="text-6xl font-black tracking-tighter underline-clip inline-block mb-4">

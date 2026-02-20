@@ -21,7 +21,7 @@ export default function Home() {
 
         {/* Text Content */}
         <div className="space-y-4">
-          <h1 className="text-5xl font-black italic tracking-tighter uppercase leading-[0.8] animate-in slide-in-from-bottom duration-700">
+          <h1 className="text-5xl font-black italic tracking-tighter uppercase leading-[0.8] animate-in slide-in-from-bottom duration-700 ">
             YFOKOI <br />
             <span className="text-primary">V2</span>
           </h1>
@@ -33,14 +33,14 @@ export default function Home() {
 
         {/* Features Preview */}
         <div className="grid grid-cols-2 gap-4 text-left">
-          <div className="p-4 bg-white/5 border border-white/5 rounded-2xl">
+          <div className="p-4 bg-white/5 border border-white/5 rounded-2xl  animate-in slide-in-from-left duration-700 ">
             <span className="text-primary text-xl font-bold italic">01</span>
             <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
               Shared
             </p>
             <p className="text-sm font-bold">Partages ciblés</p>
           </div>
-          <div className="p-4 bg-white/5 border border-white/5 rounded-2xl">
+          <div className="p-4 bg-white/5 border border-white/5 rounded-2xl animate-in slide-in-from-right duration-700">
             <span className="text-primary text-xl font-bold italic">02</span>
             <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
               Autorisations
@@ -49,19 +49,23 @@ export default function Home() {
               Différents niveaux d'accès possibles
             </p>
           </div>
-          <div className="p-4 bg-white/5 border border-white/5 rounded-2xl">
+          <div className="p-4 bg-white/5 border border-white/5 rounded-2xl animate-in slide-in-from-left duration-700">
             <span className="text-primary text-xl font-bold italic">03</span>
             <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
               Auto-apprentissage
             </p>
-            <p className="text-sm font-bold">Votre dictionnaire grandit tout seul</p>
+            <p className="text-sm font-bold">
+              Votre dictionnaire grandit tout seul
+            </p>
           </div>
-          <div className="p-4 bg-white/5 border border-white/5 rounded-2xl">
+          <div className="p-4 bg-white/5 border border-white/5 rounded-2xl animate-in slide-in-from-right duration-700">
             <span className="text-primary text-xl font-bold italic">04</span>
-            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500">
+            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ">
               Facile
             </p>
-            <p className="text-sm font-bold">Utilisation simple et accessible</p>
+            <p className="text-sm font-bold">
+              Utilisation simple et accessible
+            </p>
           </div>
         </div>
 
@@ -69,7 +73,7 @@ export default function Home() {
         <div className="flex flex-col gap-4 pt-4">
           <Link
             to="/login"
-            className="w-full py-5 bg-white text-black rounded-2xl font-black uppercase italic tracking-widest hover:bg-primary hover:text-white transition-all active:scale-95 shadow-2xl flex items-center justify-center gap-2"
+            className="w-full py-5 bg-white text-black rounded-2xl font-black uppercase italic tracking-widest hover:bg-primary hover:text-white transition-all active:scale-95 shadow-2xl flex items-center justify-center gap-2 animate-in slide-in-from-bottom duration-700"
           >
             Commencer les partages !
           </Link>

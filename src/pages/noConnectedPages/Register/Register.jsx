@@ -25,7 +25,6 @@ export default function Register() {
     );
   }, [formData]);
 
-    
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formValidated) return;
@@ -50,13 +49,16 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background text-foreground">
+    <div className="min-h-screen flex flex-col items-center justify-start pt-[3vh] p-6 bg-background text-foreground animate-in slide-in-from-right duration-500">
       <div className="w-full max-w-sm space-y-8">
         {/* Header Identité */}
         <div className="text-center space-y-2">
-          <h1 className="text-6xl font-black tracking-tighter inline-block mb-2 underline-clip">
-            REJOINDRE
+          <h1 className="text-5xl font-black tracking-tighter inline-block mb-2 underline-clip">
+            YFOKOI
           </h1>
+          <h2 className="text-4xl font-black tracking-tighter inline-block mb-6 underline-clip">
+            REJOINDRE
+          </h2>
           <p className="text-muted-foreground font-medium text-sm">
             Crée ton profil pour synchroniser <br /> tes listes sur tous tes
             appareils.
@@ -73,7 +75,7 @@ export default function Register() {
               <input
                 type="text"
                 required
-                placeholder="Vanessa"
+                placeholder="mon petit nom"
                 className="w-full mt-1 p-4 bg-muted/50 rounded-2xl border-2 border-transparent focus:border-orange-500 focus:bg-background outline-none transition-all"
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
