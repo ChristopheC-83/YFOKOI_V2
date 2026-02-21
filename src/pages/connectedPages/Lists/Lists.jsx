@@ -9,7 +9,9 @@ import NoListFrame from "./components/NoListFrame/NoListFrame";
 import { useUserStore } from "@/store/user/useUserStore";
 import NotificationBadge from "@/components/notificationBadge/NotificationBadge";
 import { toast } from "sonner";
-import useAppStore from "@/store/useAppStore";
+import useAppStore from "@/store/useAppStore";import { FiShare2 } from "react-icons/fi";
+import Sharing from "../ListSettings/components/Sharing/Sharing";
+
 
 export default function Lists() {
   const { lists = [], loadLists, loading } = useAppStore();
@@ -104,19 +106,19 @@ export default function Lists() {
               isOwner && shares.some((share) => share.status === "pending");
 
             return (
-              <div key={list.id} className="relative group">
+              <div key={list.id} className="relative group ">
                 {/* Overlay pour bloquer l'accès si en attente */}
-                <div
-                  className={`transition-all duration-300 ${
-                    iAmWaiting
-                      ? "opacity-50 grayscale pointer-events-none"
-                      : "cursor-pointer active:scale-[0.98]"
-                  }`}
-                  onClick={() => !iAmWaiting && navigate(`/list/${list.id}`)}
-                >
-                  <ListCard list={list} ownerDisplayName={ownerDisplayName} />
-                </div>
-
+                
+                  <div
+                    className={`transition-all duration-300 grow ${
+                      iAmWaiting
+                        ? "opacity-50 grayscale pointer-events-none"
+                        : "cursor-pointer active:scale-[0.98]"
+                    }`}
+                    onClick={() => !iAmWaiting && navigate(`/list/${list.id}`)}
+                  >
+                    <ListCard list={list} ownerDisplayName={ownerDisplayName} />
+                  </div>
                 {/* Badge Invité : En attente */}
                 {iAmWaiting && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">

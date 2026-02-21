@@ -37,7 +37,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-dvh w-full overflow-hidden bg-background text-foreground font-sans">
-      {/* <InstallPWA /> */}
+      <InstallPWA />
       <Toaster position="top-center" richColors />
       <main className="flex max-md:flex-col md:pl-44 md:pr-3 min-h-dvh">
         <Navbar />

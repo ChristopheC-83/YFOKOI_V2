@@ -26,7 +26,7 @@ export default function HeaderListSettings({
         onClick={onRefresh}
         disabled={isRefreshing}
         className={`p-3 rounded-2xl border bg-card transition-all active:scale-90 ${
-          isRefreshing ? "opacity-50" : "text-primary"
+          isRefreshing ? "opacity-50" : "text-clip-2"
         }`}
       >
         <FiRefreshCw

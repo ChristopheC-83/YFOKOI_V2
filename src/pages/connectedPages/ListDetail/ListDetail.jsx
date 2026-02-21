@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -185,6 +184,7 @@ export default function ListDetail() {
         onLeave={handleLeave}
         onRefresh={handleRefresh}
         isRefreshing={isRefreshing}
+        shareCode={listInfo.share_code}
       />
 
       {canEdit && <AddItemInput listId={id} />}

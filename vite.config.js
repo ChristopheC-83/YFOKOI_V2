@@ -27,8 +27,8 @@ export default defineConfig({
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "puzzles/*.png"],
       manifest: {
         name: "YFOKOI",
-        short_name: "YFOKOI2_V2.1.1",
-        description: "YFOKOI_V2.1.1",
+        short_name: "YFOKOI2_V2.1.2",
+        description: "YFOKOI_V2.1.2",
         theme_color: "#ffffff",
         background_color: "#111111",
         display: "standalone",
