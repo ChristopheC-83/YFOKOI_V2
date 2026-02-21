@@ -1,13 +1,21 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Route, RouterProvider } from "react-router-dom";
 import { privateRoutes } from "./routes/privatesRoutes";
 import { publicRoutes } from "./routes/publicRoutes";
 import Layout from "./pages/layout/Layout";
+import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
-    children: [...publicRoutes, ...privateRoutes],
+    children: [
+      ...publicRoutes,
+      ...privateRoutes,
+      {
+        path: "*",
+        element: <NotFound />, 
+      },
+    ],
   },
 ]);
 
