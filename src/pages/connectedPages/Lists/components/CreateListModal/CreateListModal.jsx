@@ -49,7 +49,9 @@ export default function CreateListModal({ isOpen, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-8 md:pt-24 bg-background/80 backdrop-blur-sm animate-in fade-in">
       <div className="w-full max-w-md bg-card border border-border rounded-[2.5rem] shadow-2xl p-4 relative animate-in slide-in-from-top-8 duration-300">
-        <h2 className="text-2xl font-black mb-6 uppercase text-center">Nouvelle Liste</h2>
+        <h2 className="text-2xl font-black mb-6 uppercase text-center">
+          Nouvelle Liste
+        </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Input Titre */}
@@ -78,10 +80,10 @@ export default function CreateListModal({ isOpen, onClose }) {
                   key={item.id}
                   type="button"
                   onClick={() => setSelectedIcon(item.id)}
-                  className={`flex items-center justify-center p-1 py-3 cursor-pointer rounded-2xl text-2xl transition-all border-2 ${
+                  className={`text-2xl p-1 py-2 rounded-xl flex justify-center  transition-all border-2 active:scale-90 ${
                     selectedIcon === item.id
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-muted/50 border-transparent hover:border-muted-foreground/30"
+                      ? "bg-primary/10 border-primary scale-110 shadow-sm"
+                      : "bg-transparent border-transparent hover:bg-muted"
                   }`}
                 >
                   {item.icon}

@@ -81,7 +81,7 @@ export default function EditList({ list }) {
               key={item.id}
               type="button"
               onClick={() => setSelectedIcon(item.id)}
-              className={`text-2xl p-1 py-3 rounded-xl flex justify-center  transition-all border-2 active:scale-90 ${
+              className={`text-2xl p-1 py-2 rounded-xl flex justify-center  transition-all border-2 active:scale-90 ${
                 selectedIcon === item.id
                   ? "bg-primary/10 border-primary scale-110 shadow-sm"
                   : "bg-transparent border-transparent hover:bg-muted"
