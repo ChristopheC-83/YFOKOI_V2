@@ -5,12 +5,14 @@ import {
 } from "@/services/shareService";
 import { toast } from "sonner";
 import { Check, X, Clock, UserCheck } from "lucide-react";
+import NotificationBadge from "@/components/notificationBadge/NotificationBadge";
 
 export default function WatingValidation({
   requests,
   profiles,
   listId,
   onRefresh,
+  hasNotification,
 }) {
   // Si aucune demande, on ne pollue pas l'écran
   if (!requests || requests.length === 0) return null;
@@ -53,8 +55,9 @@ export default function WatingValidation({
           return (
             <div
               key={request.invited_id}
-              className="flex items-center justify-between bg-primary/30 border border-orange-100 rounded-2xl p-3 transition-all hover:bg-primary/50"
+              className="flex items-center justify-between bg-primary/30 border border-orange-100 rounded-2xl p-3 transition-all hover:bg-primary/50 relative"
             >
+              {hasNotification && <NotificationBadge />}
               <div className="flex items-center gap-3">
                 {/* Avatar avec initiale */}
                 <div className="w-10 h-10 rounded-2xl bg-primary text-white flex items-center justify-center font-bold text-sm shadow-sm">
@@ -74,7 +77,7 @@ export default function WatingValidation({
               <div className="flex gap-1">
                 <button
                   onClick={() => handleAction(request.invited_id, "reject")}
-                  className="p-2.5 text-slate-400 hover:bg-red-500 hover:text-white rounded-2xl transition-all active:scale-90"
+                  className="p-2.5 text-slate-400 hover:bg-red-500 hover:text-white rounded-2xl transition-all active:scale-90 cursor-pointer"
                   title="Refuser"
                 >
                   <X size={20} />
@@ -82,7 +85,7 @@ export default function WatingValidation({
 
                 <button
                   onClick={() => handleAction(request.invited_id, "accept")}
-                  className="bg-white/70 border border-orange-200 p-2.5 font-bold text-green-500 hover:bg-green-500 hover:text-white rounded-2xl shadow-sm transition-all active:scale-90"
+                  className="bg-white/70 border border-orange-200 p-2.5 font-bold text-green-500 hover:bg-green-500 hover:text-white rounded-2xl shadow-sm transition-all active:scale-90 cursor-pointer"
                   title="Accepter"
                 >
                   <Check size={20} />

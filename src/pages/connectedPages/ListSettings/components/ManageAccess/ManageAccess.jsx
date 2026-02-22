@@ -3,8 +3,9 @@ import { getProfilesByIDs } from "@/services/shareService";
 import WatingValidation from "./components/WaintingValidation/WatingValidation";
 import LevelsManager from "./components/LevelsManager/LevelsManager";
 import { Loader2 } from "lucide-react";
+import NotificationBadge from "@/components/notificationBadge/NotificationBadge";
 
-export default function ManageAccess({ list, onRefresh }) {
+export default function ManageAccess({ list, onRefresh, hasNotification }) {
   const [profiles, setProfiles] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -52,8 +53,9 @@ export default function ManageAccess({ list, onRefresh }) {
 
   return (
     <section className="bg-card border border-border rounded-2xl p-3 shadow-sm space-y-4">
-      <h2 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+      <h2 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ">
         Gestion des accès
+        
       </h2>
 
       {/* On passe les données préparées aux composants de présentation */}
@@ -62,6 +64,7 @@ export default function ManageAccess({ list, onRefresh }) {
         profiles={profiles}
         listId={list.id}
         onRefresh={onRefresh}
+        hasNotification={hasNotification}
       />
 
       <LevelsManager

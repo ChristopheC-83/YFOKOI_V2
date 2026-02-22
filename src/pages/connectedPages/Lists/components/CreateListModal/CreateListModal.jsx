@@ -72,13 +72,13 @@ export default function CreateListModal({ isOpen, onClose }) {
             <label className="text-xs font-black text-muted-foreground ml-1">
               CHOISIR UN ICÔNE
             </label>
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-6 gap-3">
               {AVAILABLE_ICONS.map((item) => (
                 <button
                   key={item.id}
                   type="button"
                   onClick={() => setSelectedIcon(item.id)}
-                  className={`flex items-center justify-center p-4 rounded-2xl text-2xl transition-all border-2 ${
+                  className={`flex items-center justify-center p-1 py-3 cursor-pointer rounded-2xl text-2xl transition-all border-2 ${
                     selectedIcon === item.id
                       ? "bg-primary text-primary-foreground border-primary"
                       : "bg-muted/50 border-transparent hover:border-muted-foreground/30"
@@ -93,13 +93,13 @@ export default function CreateListModal({ isOpen, onClose }) {
           <button
             type="submit"
             disabled={loading || !title.trim()}
-            className="w-full bg-primary text-primary-foreground font-black py-5 rounded-2xl shadow-xl shadow-primary/20"
+            className="w-full bg-primary text-primary-foreground font-black py-5 rounded-2xl shadow-xl shadow-primary/20 cursor-pointer"
           >
             {loading ? "CRÉATION..." : "C'EST PARTI !"}
           </button>
           {/*  Fermer la modale */}
           <div
-            className="w-full bg-destructive text-destructive-foreground font-black py-5 rounded-2xl shadow-destructive/20"
+            className="w-full bg-destructive cursor-pointer text-destructive-foreground font-black py-5 rounded-2xl shadow-destructive/20"
             onClick={onClose}
           >
             <p className="text-center">ANNULER</p>

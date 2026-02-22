@@ -1,12 +1,15 @@
 import {
   FiShoppingCart,
   FiShoppingBag,
-  FiCoffee,
+  FiTool,
   FiBriefcase,
   FiHome,
   FiHeart,
   FiPackage,
   FiList,
+  FiGift,
+  FiBook,
+  FiMusic,
 } from "react-icons/fi";
 import { PiForkKnifeBold } from "react-icons/pi";
 
@@ -20,6 +23,10 @@ export const AVAILABLE_ICONS = [
   { id: "FiHeart", icon: <FiHeart />, label: "Favoris" },
   { id: "FiPackage", icon: <FiPackage />, label: "Stock" },
   { id: "FiList", icon: <FiList />, label: "Divers" },
+  { id: "FiTool ", icon: <FiTool />, label: "Travaux" },
+  { id: "FiGift", icon: <FiGift />, label: "Cadeaux" },
+  { id: "FiBook", icon: <FiBook />, label: "Livre" },
+  { id: "FiMusic", icon: <FiMusic />, label: "Musique" },
 ];
 
 /**

@@ -28,6 +28,11 @@ export default function ListSettings() {
   //  accés seulement au prprio
   const isOwner = list?.owner_id === user?.id;
 
+  //  notification
+  
+  const hasPendingRequests =
+    isOwner && list?.list_shares?.some((s) => s.status === "pending");
+
   const handleRefreshSettings = async () => {
     if (!id) return;
     setLoading(true);
@@ -125,7 +130,8 @@ export default function ListSettings() {
         <Sharing list={list} />
 
         {/* SECTION : MANAGEMENT DES PARTAGES */}
-        <ManageAccess list={list} onRefresh={() => refreshList(list.id)} />
+        <ManageAccess list={list} onRefresh={() => refreshList(list.id)} 
+        hasNotification={hasPendingRequests}/>
 
         {/* SECTION : DANGER ZONE */}
         <DeleteListButton onClick={() => setIsDeleteModalOpen(true)} />
