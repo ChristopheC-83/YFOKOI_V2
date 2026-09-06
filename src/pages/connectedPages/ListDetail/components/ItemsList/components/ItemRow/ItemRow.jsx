@@ -28,7 +28,7 @@ export default function ItemRow({
 
   return (
     <div
-      className={`flex items-center gap-4 px-3 py-2 rounded-2xl border border-border transition-all shadow 
+      className={`flex items-center gap-4 px-3 py-1 rounded-2xl border border-border transition-all shadow 
         ${isCompleted ? "opacity-60 shadow-destructive bg-secondary/10" : "shadow-secondary/40 bg-primary/20"}
         ${isDisabled ? "cursor-default grayscale-[0.5]" : "cursor-pointer active:scale-[0.98]"} `}
     >
