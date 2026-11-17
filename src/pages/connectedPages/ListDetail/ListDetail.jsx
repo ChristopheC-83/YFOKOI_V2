@@ -187,7 +187,7 @@ export default function ListDetail() {
         shareCode={listInfo.share_code}
       />
 
-      {canEdit && <AddItemInput listId={id} />}
+      {canEdit && <AddItemInput listId={id} items={items} />}
 
       <ItemsList
         items={items}

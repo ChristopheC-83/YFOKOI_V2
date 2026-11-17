@@ -5,11 +5,22 @@ import { addItem } from "@/services/itemService";
 import { dictionaryService } from "@/services/dictionaryService";
 import { useUserStore } from "@/store/user/useUserStore";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
-export default function AddItemInput({ listId }) {
+export default function AddItemInput({ listId, items }) {
   const [label, setLabel] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
+  const [duplicateLabel, setDuplicateLabel] = useState(null);
   const user = useUserStore((state) => state.user);
   const inputRef = useRef(null);
 
@@ -73,13 +84,8 @@ export default function AddItemInput({ listId }) {
     const cleanLabel = text.trim();
     if (!cleanLabel || isAdding) return;
 
-    // 1. SAUVEGARDE (au cas où ça foire)
-    const previousLabel = cleanLabel;
-
-    // 2. OPTIMISME : On vide tout de suite pour donner l'impression de vitesse
-    setLabel("");
-    setSuggestions([]);
-    setIsAdding(true); // On garde le lock pour éviter le spam
+    let added = false;
+    setIsAdding(true);
 
     try {
       // On lance l'appel
@@ -90,30 +96,64 @@ export default function AddItemInput({ listId }) {
       });
 
       if (error) {
-        // 3. ROLLBACK : En cas d'erreur, on remet le texte pour qu'il puisse corriger
-        setLabel(previousLabel);
         toast.error("Impossible d'ajouter l'article");
       } else {
         dictionaryService.add(cleanLabel);
+        setLabel("");
+        setSuggestions([]);
+        added = true;
         // Pas besoin de toast.success ici si l'item est déjà apparu,
         // c'est plus fluide sans interruption.
       }
     } catch (err) {
-      setLabel(previousLabel);
       console.error(err);
       toast.error("Erreur réseau");
     } finally {
       setIsAdding(false);
-      inputRef.current?.focus();
+      if (added) {
+        setTimeout(() => inputRef.current?.focus(), 0);
+      }
     }
   }
+
+  const handleSubmit = (text) => {
+    const cleanLabel = text.trim();
+    if (!cleanLabel || isAdding || duplicateLabel !== null) return;
+
+    const normalizedLabel = cleanLabel.toLowerCase();
+    const isDuplicate = items.some(
+      (item) => item.label?.trim().toLowerCase() === normalizedLabel,
+    );
+
+    if (isDuplicate) {
+      setDuplicateLabel(cleanLabel);
+      return;
+    }
+
+    handleSubmitFinal(cleanLabel);
+  };
+
+  const handleCancelDuplicate = () => {
+    setDuplicateLabel(null);
+    setTimeout(() => inputRef.current?.focus(), 0);
+  };
+
+  const handleConfirmDuplicate = () => {
+    const text = duplicateLabel;
+    if (!text || isAdding) return;
+
+    setDuplicateLabel(null);
+    handleSubmitFinal(text);
+  };
+
+  const isLocked = isAdding || duplicateLabel !== null;
 
   return (
     <div className="relative mb-6">
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          handleSubmitFinal(label);
+          handleSubmit(label);
         }}
         className="relative z-20"
       >
@@ -123,12 +163,12 @@ export default function AddItemInput({ listId }) {
           value={label}
           onChange={handleChange}
           placeholder="Ajouter un article..."
-          disabled={isAdding}
+          disabled={isLocked}
           className="w-full bg-card border-2 border-border focus:border-primary/50 py-3 px-4 rounded-2xl outline-none font-bold text-lg shadow-xl transition-all disabled:opacity-50"
         />
         <button
           type="submit"
-          disabled={!label.trim() || isAdding}
+          disabled={!label.trim() || isLocked}
           className="absolute right-1 top-1/2 -translate-y-1/2 bg-primary text-primary-foreground p-2 rounded-xl shadow-lg active:scale-90 transition-transform disabled:grayscale"
         >
           <FiPlus size={28} className={isAdding ? "animate-spin" : ""} />
@@ -153,6 +193,26 @@ export default function AddItemInput({ listId }) {
           ))}
         </div>
       )}
+
+      <AlertDialog open={duplicateLabel !== null}>
+        <AlertDialogContent onEscapeKeyDown={handleCancelDuplicate}>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Élément déjà présent</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cet élément est déjà dans la liste. Voulez-vous l’ajouter à
+              nouveau ?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancelDuplicate}>
+              Annuler
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDuplicate}>
+              Ajouter quand même
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -28,7 +28,7 @@ export default function ItemsList({
   return (
     <div className="flex flex-col gap-8">
       {/* SECTION : À PRENDRE */}
-      <section className="space-y-2.5">
+      <section className="space-y-2">
         {activeItems.length > 0 ? (
           activeItems.map((item) => (
             <ItemRow

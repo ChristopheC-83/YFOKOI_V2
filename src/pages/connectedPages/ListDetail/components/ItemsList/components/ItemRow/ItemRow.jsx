@@ -1,6 +1,11 @@
 import React from "react";
 import { FiTrash2, FiLock } from "react-icons/fi";
 
+const formatItemLabel = (label) => {
+  if (!label) return "";
+  return label.charAt(0).toUpperCase() + label.slice(1);
+};
+
 export default function ItemRow({
   item,
   onToggle,
@@ -28,7 +33,7 @@ export default function ItemRow({
 
   return (
     <div
-      className={`flex items-center gap-4 px-3 py-1 rounded-2xl border border-border transition-all shadow 
+      className={`flex items-center gap-4 px-3 py-0.75 rounded-2xl border border-border transition-all shadow 
         ${isCompleted ? "opacity-60 shadow-destructive bg-secondary/10" : "shadow-secondary/40 bg-primary/20"}
         ${isDisabled ? "cursor-default grayscale-[0.5]" : "cursor-pointer active:scale-[0.98]"} `}
     >
@@ -54,7 +59,7 @@ export default function ItemRow({
             <span
               className={`font-bold text-md truncate ${isCompleted ? "line-through decoration-2 opacity-50" : ""}`}
             >
-              {item.label}
+              {formatItemLabel(item.label)}
             </span>
 
             {/* AFFICHAGE DU NOM (Dynamique et frais) */}
